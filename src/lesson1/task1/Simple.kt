@@ -59,7 +59,7 @@ fun main() {
  * Пользователь задает время в часах, минутах и секундах, например, 8:20:35.
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
-fun seconds(hours: Int, minutes: Int, seconds: Int): Int = 3600 * hours + 60 * minutes + seconds
+fun seconds(hours: Int, minutes: Int, seconds: Int): Int = (3600 * hours) + (60 * minutes) + (seconds)
 
 
 /**
@@ -69,8 +69,8 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = 3600 * hours + 60 * m
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = 213.36 * sagenes + 71.12 * arshins +
-        4.445 * vershoks
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = ((213.36 * sagenes) + (71.12 * arshins) +
+        (4.445 * vershoks)) / 100
 
 /**
  * Тривиальная
@@ -78,7 +78,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = 213.36 *
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(deg: Int, min: Int, sec: Int): Double = ((deg + min / 60 + sec / 3600) * PI) / 180
+fun angleInRadian(deg: Int, min: Int, sec: Int): Double = ((deg + (min / 60) + (sec / 3600)) * PI) / 180
 
 /**
  * Тривиальная
