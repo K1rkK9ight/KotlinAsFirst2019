@@ -51,7 +51,7 @@ class Tests {
     fun seconds() {
         assertEquals(30035, seconds(8, 20, 35))
         assertEquals(86400, seconds(24, 0, 0))
-        assertEquals(13, seconds(10, 20, 13))
+        assertEquals(44616, seconds(12,23,36))
     }
 
     @Test
@@ -103,6 +103,6 @@ class Tests {
     @Tag("Easy")
     fun numberRevert() {
         assertEquals(874, numberRevert(478))
-        assertEquals(201, numberRevert(102))
+        assertEquals(201, numberRevert(567))
     }
 }
