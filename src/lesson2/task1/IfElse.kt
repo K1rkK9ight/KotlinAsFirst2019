@@ -63,7 +63,9 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String = if (((age % 10) == 1) && ((age % 10) != 11)) return("$age год") else
+    if ((age % 10.0) in 1 to 4) return ("$age года") else
+    if ((((age % 100) in 11 to 19) && ((age % 10) in 5 to 9) && ((age % 100) == 0))) return "$age лет"
 
 /**
  * Простая
@@ -75,8 +77,8 @@ fun ageDescription(age: Int): String = TODO()
 fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
-    t3: Double, v3: Double
-): Double = TODO()
+    t3: Double, v3: Double,
+): Double = ((v1 * t1 + v2 * v2 + v3 * v3) / 2) / (v1 + v2 + v3)
 
 /**
  * Простая
@@ -91,7 +93,10 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int = if (((kingX != rookX1) || (kingY != rookY1)) && ((kingX != rookX2) || (kingY != rookY2))) return 0 else
+    if ((kingX == rookX1) || (kingY == rookY1)) return 1 else
+    if ((kingX == rookX2) || (kingY == rookY2)) return 2 else
+    if (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX1) || (kingY == rookY2))) return 3
 
 /**
  * Простая
@@ -107,7 +112,7 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int =
 
 /**
  * Простая
@@ -117,7 +122,7 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int =
 
 /**
  * Средняя
