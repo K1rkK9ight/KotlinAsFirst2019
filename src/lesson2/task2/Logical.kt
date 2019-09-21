@@ -45,12 +45,14 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int { if (year % 400 == 0) return when {
+fun daysInMonth(month: Int, year: Int): Int { if ((year % 4 == 0) && (year % 100 != 0) && (year % 400 == 0))
+    return when {
 month in 1..7 step 2 -> 31
 month in 8..12 step 2 -> 31
 month == 2 -> 29
 else -> 30
-} else return when{ month in 1..7 step 2 -> 31
+}
+else return when { month in 1..7 step 2 -> 31
 month in 8..12 step 2 -> 31
 month == 2 -> 28
 else -> 30
@@ -80,11 +82,12 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-val q = (a * b)
-val w = (a * c)
-val e = (b * c)
-val t = (s * r)
-if ((q <= t) || (w <= t) || (e <= t)) return (true)
-else return (false)
+return when {
+(((a <= r) && (b <= s)) || ((b <= r) && (a <= s))) -> true
+(((a <= r) && (c <= s)) || ((c <= r) && (a <= s))) -> true
+(((b <= r) && (c <= s)) || ((c <= r) && (b <= s))) -> true
+else -> false
+
+}
 }
 

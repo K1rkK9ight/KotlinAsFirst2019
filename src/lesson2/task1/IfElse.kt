@@ -68,7 +68,7 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
 fun ageDescription(age: Int): String {
     return when {
         ((age % 10) == 1) && ((age % 10) != 11) && ((age % 100) != 11) -> "$age год"
-        ((age % 10) in 2..4) -> "$age года"
+        (((age % 10) in 2..4) && (((age % 100) != 12) || ((age % 100) != 13) || ((age % 100) != 14))) -> "$age года"
         ((((age % 100) in 11..19) && (age % 10) in 5..9)) -> "$age лет"
         else -> "$age лет"
     }
@@ -113,11 +113,10 @@ fun whichRookThreatens(
     rookX2: Int, rookY2: Int
 ): Int {
     return when {
-        (((kingX != rookX1) || (kingY != rookY1)) && ((kingX != rookX2) || (kingY != rookY2))) -> 0
         ((kingX == rookX1) || (kingY == rookY1)) -> 1
         ((kingX == rookX2) || (kingY == rookY2)) -> 2
         (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2))) -> 3
-        else -> -1
+        else -> 0
     }
 }
 
@@ -137,11 +136,10 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     return when {
-        ((((kingX != rookX) || (kingY != rookY))) && ((abs(bishopX - kingX) != abs(bishopY - kingY)))) -> 0
         ((kingX == rookX) || (kingY == rookY)) -> 1
         (abs(bishopX - kingX) == abs(bishopY - kingY)) -> 2
         (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) -> 3
-        else -> -1
+        else -> 0
     }
 }
 
