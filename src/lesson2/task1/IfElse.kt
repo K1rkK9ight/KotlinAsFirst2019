@@ -4,6 +4,7 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import ru.spbstu.kotlin.generate.assume.retry
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -99,28 +100,38 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    if (((kingX != rookX1) || (kingY != rookY1)) && ((kingX != rookX2) || (kingY != rookY2))) return 0 else
-        if ((kingX == rookX1) || (kingY == rookY1)) return 1 else
-            if ((kingX == rookX2) || (kingY == rookY2)) return 2 else
-                if (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX1) || (kingY == rookY2))) return 3
+    return when {
+        (((kingX != rookX1) || (kingY != rookY1)) && ((kingX != rookX2) || (kingY != rookY2))) -> 0
+        ((kingX == rookX1) || (kingY == rookY1)) -> 1
+        ((kingX == rookX2) || (kingY == rookY2)) -> 2
+        (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX1) || (kingY == rookY2))) -> 3
+        else -> -1
+    }
+}
 
-
-    /**
-     * Простая
-     *
-     * На шахматной доске стоят черный король и белые ладья и слон
-     * (ладья бьет по горизонтали и вертикали, слон — по диагоналям).
-     * Проверить, есть ли угроза королю и если есть, то от кого именно.
-     * Вернуть 0, если угрозы нет, 1, если угроза только от ладьи, 2, если только от слона,
-     * и 3, если угроза есть и от ладьи и от слона.
-     * Считать, что ладья и слон не могут загораживать друг друга.
-     */
-    fun rookOrBishopThreatens(
-        kingX: Int, kingY: Int,
-        rookX: Int, rookY: Int,
-        bishopX: Int, bishopY: Int
-    )
-}: Int =
+/**
+ * Простая
+ *
+ * На шахматной доске стоят черный король и белые ладья и слон
+ * (ладья бьет по горизонтали и вертикали, слон — по диагоналям).
+ * Проверить, есть ли угроза королю и если есть, то от кого именно.
+ * Вернуть 0, если угрозы нет, 1, если угроза только от ладьи, 2, если только от слона,
+ * и 3, если угроза есть и от ладьи и от слона.
+ * Считать, что ладья и слон не могут загораживать друг друга.
+ */
+fun rookOrBishopThreatens(
+    kingX: Int, kingY: Int,
+    rookX: Int, rookY: Int,
+    bishopX: Int, bishopY: Int
+): Int {
+    return when {
+        (((kingX != rookX) || (kingY != rookY)) && (abs(bishopX - kingX) != abs(bishopY - kingY))) -> 0
+        ((kingX == rookX) || (kingY == rookY)) -> 1
+        (abs(bishopX - kingX) == abs(bishopY - kingY)) -> 2
+        (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) -> 3
+        else -> -1
+    }
+}
 
 /**
  * Простая
@@ -130,7 +141,7 @@ fun whichRookThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int =
+fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
 
 /**
  * Средняя

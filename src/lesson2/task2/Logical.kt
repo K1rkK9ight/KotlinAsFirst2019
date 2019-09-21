@@ -49,7 +49,7 @@ month in 1..7 step 2 -> 31
 month in 8..12 step 2 -> 31
 month == 2 -> 29
 else -> 30
-} else return when { month in 1..7 step 2 -> 31
+} else return when{ month in 1..7 step 2 -> 31
 month in 8..12 step 2 -> 31
 else -> 30
 }

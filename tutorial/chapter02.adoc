@@ -169,7 +169,7 @@ fun pointInsideCircle() {
 val x = 0.5
 val y = 0.5
 // Пересечение: логическое И
-if (pointInsideCircle(x, y, 0.0, 0.0, 1.0) && pointInsideCircle(x, y, 1.0, 1.0, 1.0)) { ... }
+if (pointInsideCircle(x, y, 0.0, 0.0, 1.0)  pointInsideCircle(x, y, 1.0, 1.0, 1.0)) { ... }
 // Объединение: логическое ИЛИ
 if (pointInsideCircle(x, y, 0.0, 0.0, 1.0) || pointInsideCircle(x, y, 1.0, 1.0, 1.0)) { ... }
 // Не принадлежит
