@@ -67,8 +67,8 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  */
 fun ageDescription(age: Int): String {
     return when {
-        ((age % 10) == 1) && ((age % 10) != 11) -> "$age год"
-        ((age % 10) in 1..4) -> "$age года"
+        ((age % 10) == 1) && ((age % 10) != 11) && ((age % 100) != 11) -> "$age год"
+        ((age % 10) in 2..4) -> "$age года"
         ((((age % 100) in 11..19) && (age % 10) in 5..9)) -> "$age лет"
         else -> "$age лет"
     }
@@ -84,7 +84,19 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = ((v1 * t1 + v2 * v2 + v3 * v3) / 2) / (v1 + v2 + v3)
+): Double {
+    val s1 = t1 * v1
+    val s2 = t2 * v2
+    val s3 = t3 * v3
+    val S = s1 + s2 + s3
+    val poloS = S / 2
+    return when {
+        poloS <= s1 -> poloS / v1
+        ((poloS <= (s1 + s2)) && (poloS > s1)) -> ((poloS + t1 - s1) / v2)
+        ((poloS <= S) && (poloS > (s1 + s2))) -> ((poloS + t1 + t2 - s1 - s2) / v3)
+        else -> 0.0
+    }
+}
 
 /**
  * Простая
@@ -104,7 +116,7 @@ fun whichRookThreatens(
         (((kingX != rookX1) || (kingY != rookY1)) && ((kingX != rookX2) || (kingY != rookY2))) -> 0
         ((kingX == rookX1) || (kingY == rookY1)) -> 1
         ((kingX == rookX2) || (kingY == rookY2)) -> 2
-        (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX1) || (kingY == rookY2))) -> 3
+        (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2))) -> 3
         else -> -1
     }
 }
