@@ -20,9 +20,10 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean {
-    if ((number / 1000) + ((number % 1000) / 100) == (number % 100) +
-        ((number % 10) / 10)) return (true)
-    else return (false)
+    return when {
+        ((number / 1000) + ((number / 100) % 10) == ((number % 100) / 10) + ((number % 10))) -> true
+        else -> false
+    }
 }
 
 /**
@@ -33,11 +34,11 @@ fun isNumberHappy(number: Int): Boolean {
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
-    ((x1 == x2) || (y1 == y2) || (kotlin.math.abs(x1 - x2) == kotlin.math.abs(y1 - y2)))
-    return true
+    return when {
+        ((x1 == x2) || (y1 == y2) || ((kotlin.math.abs(x1 - x2) == kotlin.math.abs(y1 - y2)))) -> true
+        else -> false
+    }
 }
-
-
 /**
  * Простая
  *
@@ -51,6 +52,7 @@ month == 2 -> 29
 else -> 30
 } else return when{ month in 1..7 step 2 -> 31
 month in 8..12 step 2 -> 31
+month == 2 -> 28
 else -> 30
 }
 }
@@ -82,7 +84,7 @@ val q = (a * b)
 val w = (a * c)
 val e = (b * c)
 val t = (s * r)
-if ((q == t) || (w == t) || (e == t)) return (true)
+if ((q <= t) || (w <= t) || (e <= t)) return (true)
 else return (false)
 }
 
