@@ -3,6 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
 import ru.spbstu.kotlin.generate.assume.retry
 import kotlin.math.abs
 import kotlin.math.max
@@ -65,14 +66,14 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    return when {
+fun ageDescription(age: Int): String =
+    when {
         ((age % 10) == 1) && ((age % 10) != 11) && ((age % 100) != 11) -> "$age год"
-        (((age % 10) in 2..4) && (((age % 100) != 12) && ((age % 100) != 13) && ((age % 100) != 14))) -> "$age года"
+        (((age % 10) in 2..4) && (age % 100 !in 12..14)) -> "$age года"
         ((((age % 100) in 11..19) && (age % 10) in 5..9)) -> "$age лет"
         else -> "$age лет"
-    }
 }
+
 /**
  * Простая
  *
@@ -91,7 +92,7 @@ fun timeForHalfWay(
     val ves = s1 + s2 + s3
     val poloS = ves / 2
     return when {
-        poloS <= s1 -> poloS / v1
+        (poloS <= s1) -> (poloS / v1)
         ((poloS <= (s1 + s2)) && (poloS > s1)) -> (((poloS + t1) - s1) / v2)
         ((poloS <= ves) && (poloS > (s1 + s2))) -> ((((poloS + t1 + t2) - s1) - s2) / v3)
         else -> 0.0
@@ -151,7 +152,17 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val bolsh = maxOf(a, b, c)
+    val malen = minOf(a, b, c)
+    val sred = (((a + b + c) - bolsh) - malen)
+    return when {
+        (sqr(bolsh) < (sqr(malen) + sqr(sred))) -> 0
+        (sqr(bolsh) == (sqr(malen) + sqr(sred))) -> 1
+        (sqr(bolsh) > (sqr(malen) + sqr(sred))) -> 2
+        else -> -1
+    }
+}
 
 /**
  * Средняя
