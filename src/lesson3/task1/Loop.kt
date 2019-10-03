@@ -28,7 +28,7 @@ fun isPrime(n: Int): Boolean {
     if (n < 2) return false
     if (n == 2) return true
     if (n % 2 == 0) return false
-    for (m in 3..sqrt(n.toDouble()).toInt() step 2) {
+    for (m in 3..sqrt(n.toDouble()).toInt() step 2){
         if (n % m == 0) return false
     }
     return true
@@ -41,7 +41,7 @@ fun isPrime(n: Int): Boolean {
  */
 fun isPerfect(n: Int): Boolean {
     var sum = 1
-    for (m in 2..n / 2) {
+    for (m in 2..n / 2){
         if (n % m > 0) continue
         sum += m
         if (sum > n) break
@@ -72,11 +72,11 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
     var count = 0
     var number = n
-    if (number == 0) return 1 else
-        while (number > 0) {
-            number /= 10
-            count++
-        }
+    if (number == 0) return 1
+    while (number != 0){
+        number /= 10
+        count++
+    }
     return count
 }
 
@@ -90,7 +90,7 @@ fun fib(n: Int): Int {
     var a = 0
     var b = 1
     var c = 1
-    for (i in 2..n) {
+    for (i in 2..n){
         c = a + b
         a = b
         b = c
@@ -108,7 +108,7 @@ fun lcm(m: Int, n: Int): Int {
     var a = n
     var b = m
     val c = a * b
-    while (a != b) {
+    while (a != b){
         if (b > a)
             b -= a
         else a -= b
@@ -125,7 +125,7 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var a = 0
-    for (i in 1..n) {
+    for (i in 2..n){
         if (n % i == 0) {
             a = i
             if (a > 1) break
@@ -138,14 +138,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var a = 0
-    for (i in 1..n) {
-        if ((n % i == 0) && (i < n))
-            a = i
-    }
-    return a
-}
+fun maxDivisor(n: Int): Int = (n / minDivisor(n))
 
 /**
  * Простая
@@ -170,7 +163,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (i in 1..sqrt(n.toDouble()).toInt()) {
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
         if ((i * i) in m..n) return true
     }
     return false
@@ -237,12 +230,8 @@ fun cos(x: Double, eps: Double): Double = TODO()
 fun revert(n: Int): Int {
     var count = 0
     var a = 0
-    var b = n
     var c = n
-    while (b > 0) {
-        b /= 10
-        count++
-    }
+    count += digitNumber(n)
     for (i in 1..count) {
         a = ((a * 10) + (c % 10))
         c /= 10
@@ -260,15 +249,10 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var a = n
     var b = 0
     val c = n
-    while (a > 0) {
-        b = ((a % 10) + (b * 10))
-        a /= 10
-    }
-    if (b == c) return true
-    else return false
+    b = revert(n)
+    return b == c
 }
 
 /**
@@ -280,14 +264,11 @@ fun isPalindrome(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var a = n
     val b = n % 10
     var c = n
     var count = 0
-    while (a > 0) {
-        a /= 10
-        count++
-    }
+
+    count += digitNumber(n)
     if (count == 1) return false
     else while (c > 0) {
         if ((c % 10) != b) return true
@@ -313,22 +294,17 @@ fun squareSequenceDigit(n: Int): Int {
     var count = 0
     var des = 10
     while(DtoN < n){
-        count++
-        kvadratbI = sqr(count)
-        while((kvadratbI / des) != 0){
-            c++
-            des *= 10
-        }
-        DtoN += c
+        DtoN++
+        kvadratbI = sqr(DtoN)
+        count = digitNumber(kvadratbI)
+
     }
     DtoN -= c
-    des /= 10
     while(DtoN != n){
-        numberN = (kvadratbI / des) % 10
-        des /= 10
+        numberN = (kvadratbI / des)
         DtoN++
     }
-    return numberN
+    return numberN % 10
 }
 
 
