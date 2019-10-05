@@ -73,7 +73,7 @@ fun digitNumber(n: Int): Int {
     var count = 0
     var number = n
     if (number == 0) return 1
-    while (number != 0){
+    while (number != 0) {
         number /= 10
         count++
     }
@@ -90,7 +90,7 @@ fun fib(n: Int): Int {
     var a = 0
     var b = 1
     var c = 1
-    for (i in 2..n){
+    for (i in 2..n) {
         c = a + b
         a = b
         b = c
@@ -108,7 +108,7 @@ fun lcm(m: Int, n: Int): Int {
     var a = n
     var b = m
     val c = a * b
-    while (a != b){
+    while (a != b) {
         if (b > a)
             b -= a
         else a -= b
@@ -125,10 +125,10 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var a = 0
-    for (i in 2..n){
+    for (i in 2..n) {
         if (n % i == 0) {
             a = i
-            if (a > 1) break
+            break
         }
     }
     return a
@@ -149,7 +149,7 @@ fun maxDivisor(n: Int): Int = (n / minDivisor(n))
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     val c = minOf(m, n)
-    for (i in 2..c){
+    for (i in 2..c) {
         if (((m % i) == 0) && ((n % i) == 0)) return false
     }
     return true
@@ -163,7 +163,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (i in 2..sqrt(n.toDouble()).toInt()) {
+    for (i in sqrt(m.toDouble()).toInt()..sqrt(n.toDouble()).toInt()) {
         if ((i * i) in m..n) return true
     }
     return false
@@ -228,17 +228,15 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun revert(n: Int): Int {
-    var count = 0
     var a = 0
     var c = n
-    count += digitNumber(n)
+    val count = digitNumber(n)
     for (i in 1..count) {
         a = ((a * 10) + (c % 10))
         c /= 10
     }
     return a
 }
-
 /**
  * Средняя
  *
@@ -249,10 +247,8 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var b = 0
-    val c = n
-    b = revert(n)
-    return b == c
+    val b = revert(n)
+    return b == n
 }
 
 /**
@@ -266,11 +262,9 @@ fun isPalindrome(n: Int): Boolean {
 fun hasDifferentDigits(n: Int): Boolean {
     val b = n % 10
     var c = n
-    var count = 0
-
-    count += digitNumber(n)
+    val count = digitNumber(n)
     if (count == 1) return false
-    else while (c > 0) {
+    while (c > 0) {
         if ((c % 10) != b) return true
         c /= 10
     }
@@ -287,24 +281,23 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var numberN = 0
-    var kvadratbI = 0
-    var c = 1
-    var DtoN = 0
-    var count = 0
-    var des = 10
-    while(DtoN < n){
-        DtoN++
-        kvadratbI = sqr(DtoN)
-        count = digitNumber(kvadratbI)
-
+    var toN = 0
+    var count = 1
+    var kvad = 0
+    var otv = 0
+    while (toN < n) {
+        kvad = sqr(count)
+        count++
+        toN += digitNumber(kvad)
     }
-    DtoN -= c
-    while(DtoN != n){
-        numberN = (kvadratbI / des)
-        DtoN++
+    val a = 1 + toN - n
+    var search = 0
+    while (search < a) {
+        otv = kvad
+        kvad /= 10
+        search++
     }
-    return numberN % 10
+    return otv % 10
 }
 
 
@@ -318,32 +311,23 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var numberN = 0
-    var fib3 = 0
-    var fib2 = 0
-    var fib1 = 1
-    var c = 1
-    var DtoN = 0
-    var des = 10
-    while(DtoN < n){
-        fib3 = fib1 + fib2
-        fib1 = fib2
-        fib2 = fib3
-        while((fib3 / des) != 0){
-            c++
-            des *= 10
-        }
-        DtoN += c
+    var fib = 0
+    var count = 1
+    var toN = 0
+    var otv = 0
+    while (toN < n) {
+        fib = fib(count)
+        count++
+        toN += digitNumber(fib)
     }
-    DtoN -= c
-    des /= 10
-    while(DtoN != n){
-        numberN = (fib3 / des) % 10
-        des /= 10
-        DtoN++
+    val a = 1 + toN - n
+    var search = 0
+    while (search < a) {
+        search++
+        otv = fib
+        fib /= 10
     }
-    return numberN
+    return otv % 10
 }
-
 
 

@@ -7,6 +7,7 @@ import lesson1.task1.sqr
 import ru.spbstu.kotlin.generate.assume.retry
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -133,14 +134,13 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int {
-    return when {
-        ((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY)) -> 3
-        (kingX == rookX) || (kingY == rookY) -> 1
-        abs(bishopX - kingX) == abs(bishopY - kingY) -> 2
-        else -> 0
-    }
+): Int = when {
+    ((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY)) -> 3
+    (kingX == rookX) || (kingY == rookY) -> 1
+    abs(bishopX - kingX) == abs(bishopY - kingY) -> 2
+    else -> 0
 }
+
 
 /**
  * Простая
@@ -154,13 +154,13 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val bolsh = maxOf(a, b, c)
     val malen = minOf(a, b, c)
     val sred = (((a + b + c) - bolsh) - malen)
-    return if (malen + sred <= bolsh) -1 else
-        when {
-            sqr(bolsh) < (sqr(malen) + sqr(sred)) -> 0
-            sqr(bolsh) == (sqr(malen) + sqr(sred)) -> 1
-            sqr(bolsh) > (sqr(malen) + sqr(sred)) -> 2
-            else -> -1
-        }
+    return if (malen + sred <= bolsh) -1
+    else when {
+        sqr(bolsh) < (sqr(malen) + sqr(sred)) -> 0
+        sqr(bolsh) == (sqr(malen) + sqr(sred)) -> 1
+        sqr(bolsh) > (sqr(malen) + sqr(sred)) -> 2
+        else -> -1
+    }
 }
 
 /**
@@ -171,4 +171,19 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    val mal = minOf(a, c)
+    if (mal == a)
+        return when {
+            (c > b) -> -1
+            ((d < b) && (c == d)) -> 0
+            (b > d) -> (d - c)
+            else -> (b - c)
+        }
+    else return when {
+        (a > d) -> -1
+        ((a < d) && (a == b)) -> 0
+        (d > b) -> (b - a)
+        else -> (d - a)
+    }
+}
