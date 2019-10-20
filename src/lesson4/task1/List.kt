@@ -254,11 +254,12 @@ fun convert(n: Int, base: Int): List<Int> {
     var number = n
     val b = base
     var element: Int
-    while (number > 0) {
-        element = number % b
-        number /= b
-        list += element
-    }
+    if (number == 0) return list else
+        while (number > 0) {
+            element = number % b
+            number /= b
+            list += element
+        }
     return list.reversed()
 }
 
@@ -281,21 +282,19 @@ fun convertToString(n: Int, base: Int): String {
     val b = base
     val znak = mutableListOf<Int>()
     val result = mutableListOf<String>()
-    while (number > 0) {
-        znak += (number % b)
-        number /= b
-    }
+    if (number == 0) return result.joinToString("") else
+        while (number > 0) {
+            znak += (number % b)
+            number /= b
+        }
     for (i in 0..znak.size - 1) {
         if ((znak[i] > 9) && (znak[i] % 100) < 20) {
             result += alph[znak[i] % 10]
-        }
-        else if ((znak[i] > 9) && ((znak[i] % 100) > 19) && ((znak[i] % 100) < 31)) {
+        } else if ((znak[i] > 9) && ((znak[i] % 100) > 19) && ((znak[i] % 100) < 31)) {
             result += alph1[znak[i] % 10]
-        }
-        else if ((znak[i] > 9) && ((znak[i] % 100) > 30)) {
+        } else if ((znak[i] > 9) && ((znak[i] % 100) > 30)) {
             result += alph2[znak[i] % 10]
-        }
-        else result += znak[i].toString()
+        } else result += znak[i].toString()
     }
     result.reverse()
     return result.joinToString("")
@@ -377,16 +376,20 @@ fun roman(n: Int): String {
  */
 fun russian(n: Int): String {
     val OnetoNine = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    val TentoNi = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
+    val TentoNi = listOf(
+        "десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
         "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
     )
-    val TwotoNineDes = listOf("", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
+    val TwotoNineDes = listOf(
+        "", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
         "девяносто"
     )
-    val OnetoNineSot = listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот",
+    val OnetoNineSot = listOf(
+        "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот",
         "девятьсот"
     )
-    val OnetoNineTh = listOf("тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
+    val OnetoNineTh = listOf(
+        "тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
         "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч", "тысяч"
     )
     val list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
@@ -401,11 +404,12 @@ fun russian(n: Int): String {
     val list1 = list.reversed()
     if (list1[0] > 0) result.add(OnetoNineSot[list1[0]])
     if (list1[1] == 1) result.add(TentoNi[list1[2]])
-    if ((list1[1] == 1) || ((list1[0] > 0) && (list1[1] == 0) && (list1[2] == 0))
-        || ((list1[1] == 1) && (list1[1] != 0) && (list1[2] != 0)))
-        result.add(OnetoNineTh[0])
     if (list1[1] != 1) result.add(TwotoNineDes[list1[1]])
     if ((list1[1] != 1) && (list1[2] != 0)) result.add(OnetoNineTh[list1[2]])
+    if (list1[1] == 1) result.add(OnetoNineTh[0])
+    if (list1[0] > 0 && list1[1] != 1 && list1[2] != 0) result.add(OnetoNineTh[0])
+    if (list1[0] > 0 && list1[1] == 0 && list1[2] == 0) result.add(OnetoNineTh[0])
+    if (list1[0] > 0 && list1[1] > 1 && list1[2] == 0) result.add(OnetoNineTh[0])
     if (list1[3] > 0) result.add(OnetoNineSot[list1[3]])
     if (list1[4] == 1) result.add(TentoNi[list1[5]])
     if (list1[4] != 1) result.add(TwotoNineDes[list1[4]])
