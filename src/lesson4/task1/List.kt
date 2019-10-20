@@ -253,8 +253,8 @@ fun convert(n: Int, base: Int): List<Int> {
     var list = listOf<Int>()
     var number = n
     val b = base
-    var element: Int
-    if (number == 0) return list else
+    var element = 0
+    if (number == 0) list += element else
         while (number > 0) {
             element = number % b
             number /= b
@@ -282,7 +282,7 @@ fun convertToString(n: Int, base: Int): String {
     val b = base
     val znak = mutableListOf<Int>()
     val result = mutableListOf<String>()
-    if (number == 0) return result.joinToString("") else
+    if (number == 0) result.add("0") else
         while (number > 0) {
             znak += (number % b)
             number /= b
@@ -406,10 +406,8 @@ fun russian(n: Int): String {
     if (list1[1] == 1) result.add(TentoNi[list1[2]])
     if (list1[1] != 1) result.add(TwotoNineDes[list1[1]])
     if ((list1[1] != 1) && (list1[2] != 0)) result.add(OnetoNineTh[list1[2]])
+    if (list1[0] > 0 && list1[1] == 0 && list1[2] == 0 || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0)) result.add(OnetoNineTh[0])
     if (list1[1] == 1) result.add(OnetoNineTh[0])
-    if (list1[0] > 0 && list1[1] != 1 && list1[2] != 0) result.add(OnetoNineTh[0])
-    if (list1[0] > 0 && list1[1] == 0 && list1[2] == 0) result.add(OnetoNineTh[0])
-    if (list1[0] > 0 && list1[1] > 1 && list1[2] == 0) result.add(OnetoNineTh[0])
     if (list1[3] > 0) result.add(OnetoNineSot[list1[3]])
     if (list1[4] == 1) result.add(TentoNi[list1[5]])
     if (list1[4] != 1) result.add(TwotoNineDes[list1[4]])
