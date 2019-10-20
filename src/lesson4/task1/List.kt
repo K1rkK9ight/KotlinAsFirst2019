@@ -273,7 +273,33 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    var number = n
+    val alph = arrayListOf<String>("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")
+    val alph1 = arrayListOf<String>("k", "l", "m", "n", "o", "p", "q", "r", "s", "t")
+    val alph2 = arrayListOf<String>("u", "v", "w", "x", "y", "z")
+    val b = base
+    val znak = mutableListOf<Int>()
+    val result = mutableListOf<String>()
+    while (number > 0) {
+        znak += (number % b)
+        number /= b
+    }
+    for (i in 0..znak.size - 1) {
+        if ((znak[i] > 9) && (znak[i] % 100) < 20) {
+            result += alph[znak[i] % 10]
+        }
+        else if ((znak[i] > 9) && ((znak[i] % 100) > 19) && ((znak[i] % 100) < 31)) {
+            result += alph1[znak[i] % 10]
+        }
+        else if ((znak[i] > 9) && ((znak[i] % 100) > 30)) {
+            result += alph2[znak[i] % 10]
+        }
+        else result += znak[i].toString()
+    }
+    result.reverse()
+    return result.joinToString("")
+}
 
 /**
  * Средняя
@@ -304,7 +330,19 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var stroka: String
+    val length = str.length - 1
+    var number = 0
+    var bs = 1
+    for (i in length downTo 0) {
+        stroka = if (str[i].isDigit()) str[i].toString()
+        else (str[i].toInt() - 87).toString()
+        number += stroka.toInt() * bs
+        bs *= base
+    }
+    return number
+}
 
 /**
  * Сложная
@@ -314,7 +352,21 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var number = n
+    var result = ""
+    val Arab = listOf<Int>(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
+    val Rim = listOf<String>("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
+    val reArab = Arab.lastIndex
+    for (i in reArab downTo 0) {
+        while (number >= Arab[i]) {
+            result += Rim[i]
+            number -= Arab[i]
+        }
+    }
+    return result
+}
+
 
 /**
  * Очень сложная
@@ -323,4 +375,43 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val OnetoNine = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val TentoNi = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
+        "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
+    )
+    val TwotoNineDes = listOf("", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
+        "девяносто"
+    )
+    val OnetoNineSot = listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот",
+        "девятьсот"
+    )
+    val OnetoNineTh = listOf("тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
+        "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч", "тысяч"
+    )
+    val list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
+    var number = n
+    var count = 0
+    val result = mutableListOf<String>()
+    while (number > 0) {
+        list[count] = (number % 10)
+        number /= 10
+        count++
+    }
+    val list1 = list.reversed()
+    if (list1[0] > 0) result.add(OnetoNineSot[list1[0]])
+    if (list1[1] == 1) result.add(TentoNi[list1[2]])
+    if ((list1[1] == 1) || ((list1[0] > 0) && (list1[1] == 0) && (list1[2] == 0))
+        || ((list1[1] == 1) && (list1[1] != 0) && (list1[2] != 0)))
+        result.add(OnetoNineTh[0])
+    if (list1[1] != 1) result.add(TwotoNineDes[list1[1]])
+    if ((list1[1] != 1) && (list1[2] != 0)) result.add(OnetoNineTh[list1[2]])
+    if (list1[3] > 0) result.add(OnetoNineSot[list1[3]])
+    if (list1[4] == 1) result.add(TentoNi[list1[5]])
+    if (list1[4] != 1) result.add(TwotoNineDes[list1[4]])
+    if (list1[4] != 1) result.add(OnetoNine[list1[5]])
+    if ("" in result) {
+        while ("" in result) result.remove("")
+    }
+    return result.joinToString(" ")
+}
