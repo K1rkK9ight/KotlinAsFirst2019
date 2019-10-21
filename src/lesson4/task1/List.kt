@@ -287,14 +287,14 @@ fun convertToString(n: Int, base: Int): String {
             znak += (number % b)
             number /= b
         }
-    for (i in 0..znak.size - 1) {
-        if ((znak[i] > 9) && (znak[i] % 100) < 20) {
-            result += alph[znak[i] % 10]
+    for (i in 0 until znak.size) {
+        result += if ((znak[i] > 9) && (znak[i] % 100) < 20) {
+            alph[znak[i] % 10]
         } else if ((znak[i] > 9) && ((znak[i] % 100) > 19) && ((znak[i] % 100) < 31)) {
-            result += alph1[znak[i] % 10]
+            alph1[znak[i] % 10]
         } else if ((znak[i] > 9) && ((znak[i] % 100) > 30)) {
-            result += alph2[znak[i] % 10]
-        } else result += znak[i].toString()
+            alph2[znak[i] % 10]
+        } else znak[i].toString()
     }
     result.reverse()
     return result.joinToString("")
@@ -390,7 +390,7 @@ fun russian(n: Int): String {
     )
     val OnetoNineTh = listOf(
         "тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
-        "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч", "тысяч"
+        "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч"
     )
     val list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
     var number = n
@@ -406,7 +406,8 @@ fun russian(n: Int): String {
     if (list1[1] == 1) result.add(TentoNi[list1[2]])
     if (list1[1] != 1) result.add(TwotoNineDes[list1[1]])
     if ((list1[1] != 1) && (list1[2] != 0)) result.add(OnetoNineTh[list1[2]])
-    if (list1[0] > 0 && list1[1] == 0 && list1[2] == 0 || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0)) result.add(OnetoNineTh[0])
+    if (list1[0] > 0 && list1[1] == 0 && list1[2] == 0 || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0))
+        result.add(OnetoNineTh[0])
     if (list1[1] == 1) result.add(OnetoNineTh[0])
     if (list1[3] > 0) result.add(OnetoNineSot[list1[3]])
     if (list1[4] == 1) result.add(TentoNi[list1[5]])
