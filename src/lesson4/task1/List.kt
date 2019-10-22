@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import lesson8.task1.findNearestCirclePair
 import kotlin.math.pow
 import kotlin.math.sqrt
 import java.io.File.separator as separator
@@ -134,10 +135,9 @@ fun abs(v: List<Double>): Double {
 fun mean(list: List<Double>): Double {
     var sum = 0.0
     val del = list.size
-    if (list.isEmpty()) return 0.0 else
-        for (element in list) {
-            sum += element
-        }
+    if (list.isEmpty()) return 0.0
+    for (element in list)
+        sum += element
     return sum / del
 }
 
@@ -151,10 +151,8 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val del = mean(list)
-    if (list.isEmpty()) return list else
-        for (i in 0 until list.size) {
-            list[i] -= del
-        }
+    for (i in 0 until list.size)
+        list[i] -= del
     return list
 }
 
@@ -184,9 +182,11 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var sum = 0
+    var xx = 1
     if (p.isEmpty()) return 0 else
         for (i in 0 until (p.size)) {
-            sum += p[i] * x.toDouble().pow(i).toInt()
+            sum += p[i] * xx
+            xx *= x
         }
     return sum
 }
@@ -230,7 +230,7 @@ fun factorize(n: Int): List<Int> {
                 count++
         } else count++
     }
-    return list.sorted()
+    return list
 }
 
 /**
@@ -250,14 +250,13 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
-    var list = listOf<Int>()
+    val list = mutableListOf<Int>()
     var number = n
-    val b = base
     var element = 0
     if (number == 0) list += element else
         while (number > 0) {
-            element = number % b
-            number /= b
+            element = number % base
+            number /= base
             list += element
         }
     return list.reversed()
@@ -275,30 +274,15 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    var number = n
-    val alph = arrayListOf<String>("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")
-    val alph1 = arrayListOf<String>("k", "l", "m", "n", "o", "p", "q", "r", "s", "t")
-    val alph2 = arrayListOf<String>("u", "v", "w", "x", "y", "z")
-    val b = base
-    val znak = mutableListOf<Int>()
+    val list = convert(n, base)
     val result = mutableListOf<String>()
-    if (number == 0) result.add("0") else
-        while (number > 0) {
-            znak += (number % b)
-            number /= b
-        }
-    for (i in 0 until znak.size) {
-        result += if ((znak[i] > 9) && (znak[i] % 100) < 20) {
-            alph[znak[i] % 10]
-        } else if ((znak[i] > 9) && ((znak[i] % 100) > 19) && ((znak[i] % 100) < 31)) {
-            alph1[znak[i] % 10]
-        } else if ((znak[i] > 9) && ((znak[i] % 100) > 30)) {
-            alph2[znak[i] % 10]
-        } else znak[i].toString()
+    for (it in list) {
+        if (it > 9) result.add((it + 87).toChar().toString())
+        else result.add("$it")
     }
-    result.reverse()
     return result.joinToString("")
 }
+
 
 /**
  * Средняя
@@ -310,9 +294,10 @@ fun convertToString(n: Int, base: Int): String {
 fun decimal(digits: List<Int>, base: Int): Int {
     var number = 0
     val dig = digits.reversed()
-    val b = base
+    var b = 1
     for (i in 0 until (dig.size)) {
-        number += dig[i] * b.toDouble().pow(i).toInt()
+        number += dig[i] * b
+        b *= base
     }
     return number
 }
@@ -330,19 +315,18 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var stroka: String
+    var string: String
     val length = str.length - 1
     var number = 0
     var bs = 1
     for (i in length downTo 0) {
-        stroka = if (str[i].isDigit()) str[i].toString()
+        string = if (str[i].isDigit()) str[i].toString()
         else (str[i].toInt() - 87).toString()
-        number += stroka.toInt() * bs
+        number += string.toInt() * bs
         bs *= base
     }
     return number
 }
-
 /**
  * Сложная
  *
@@ -354,13 +338,15 @@ fun decimalFromString(str: String, base: Int): Int {
 fun roman(n: Int): String {
     var number = n
     var result = ""
-    val Arab = listOf<Int>(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
-    val Rim = listOf<String>("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
-    val reArab = Arab.lastIndex
-    for (i in reArab downTo 0) {
-        while (number >= Arab[i]) {
-            result += Rim[i]
-            number -= Arab[i]
+    val arabNrim = listOf(
+        1 to "I", 4 to "IV", 5 to "V", 9 to "IX", 10 to "X", 40 to "XL", 50 to "L", 90 to "XC",
+        100 to "C", 400 to "CD", 500 to "D", 900 to "CM", 1000 to "M"
+    )
+    val re = arabNrim.reversed()
+    for ((arabic, roman) in re) {
+        while (number >= arabic) {
+            result += roman
+            number -= arabic
         }
     }
     return result
@@ -375,24 +361,24 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    val OnetoNine = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    val TentoNi = listOf(
+    val onetonine = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val tentonineteen = listOf(
         "десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
         "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
     )
-    val TwotoNineDes = listOf(
+    val twotoninedecade = listOf(
         "", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
         "девяносто"
     )
-    val OnetoNineSot = listOf(
+    val onetoninehundred = listOf(
         "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот",
         "девятьсот"
     )
-    val OnetoNineTh = listOf(
+    val onetoninethousand = listOf(
         "тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
         "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч"
     )
-    val list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
+    val list = mutableListOf(0,0,0,0,0,0)
     var number = n
     var count = 0
     val result = mutableListOf<String>()
@@ -402,17 +388,17 @@ fun russian(n: Int): String {
         count++
     }
     val list1 = list.reversed()
-    if (list1[0] > 0) result.add(OnetoNineSot[list1[0]])
-    if (list1[1] == 1) result.add(TentoNi[list1[2]])
-    if (list1[1] != 1) result.add(TwotoNineDes[list1[1]])
-    if ((list1[1] != 1) && (list1[2] != 0)) result.add(OnetoNineTh[list1[2]])
-    if (list1[0] > 0 && list1[1] == 0 && list1[2] == 0 || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0))
-        result.add(OnetoNineTh[0])
-    if (list1[1] == 1) result.add(OnetoNineTh[0])
-    if (list1[3] > 0) result.add(OnetoNineSot[list1[3]])
-    if (list1[4] == 1) result.add(TentoNi[list1[5]])
-    if (list1[4] != 1) result.add(TwotoNineDes[list1[4]])
-    if (list1[4] != 1) result.add(OnetoNine[list1[5]])
+    if (list1[0] > 0) result.add(onetoninehundred[list1[0]])
+    if (list1[1] == 1) result.add(tentonineteen[list1[2]])
+    if (list1[1] != 1) result.add(twotoninedecade[list1[1]])
+    if ((list1[1] != 1) && (list1[2] != 0)) result.add(onetoninethousand[list1[2]])
+    if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0 ||
+                (list1[1] == 1))
+    ) result.add(onetoninethousand[0])
+    if (list1[3] > 0) result.add(onetoninehundred[list1[3]])
+    if (list1[4] == 1) result.add(tentonineteen[list1[5]])
+    if (list1[4] != 1) result.add(twotoninedecade[list1[4]])
+    if (list1[4] != 1) result.add(onetonine[list1[5]])
     if ("" in result) {
         while ("" in result) result.remove("")
     }
