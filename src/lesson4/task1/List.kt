@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
+@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence", "IMPLICIT_CAST_TO_ANY")
 
 package lesson4.task1
 
@@ -119,13 +119,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var sum = 0.0
-    for (element in v) {
-        sum += sqr(element)
-    }
-    return sqrt(sum)
-}
+fun abs(v: List<Double>): Double = sqrt(v.sumByDouble { sqr(it)} )
 
 /**
  * Простая
@@ -273,15 +267,8 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String {
-    val list = convert(n, base)
-    val result = mutableListOf<String>()
-    for (it in list) {
-        if (it > 9) result.add((it + 87).toChar().toString())
-        else result.add("$it")
-    }
-    return result.joinToString("")
-}
+fun convertToString(n: Int, base: Int): String = convert(n, base).map { if (it > 9) ('a' + it - 10) else (it) }
+    .joinToString("")
 
 
 /**
@@ -314,19 +301,8 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int {
-    var string: String
-    val length = str.length - 1
-    var number = 0
-    var bs = 1
-    for (i in length downTo 0) {
-        string = if (str[i].isDigit()) str[i].toString()
-        else (str[i].toInt() - 87).toString()
-        number += string.toInt() * bs
-        bs *= base
-    }
-    return number
-}
+fun decimalFromString(str: String, base: Int): Int = decimal(str.map { if (it > '9') it - 'a' + 10 else it - '0' }, base)
+
 /**
  * Сложная
  *
@@ -393,8 +369,7 @@ fun russian(n: Int): String {
     if (list1[1] != 1) result.add(twotoninedecade[list1[1]])
     if ((list1[1] != 1) && (list1[2] != 0)) result.add(onetoninethousand[list1[2]])
     if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0 ||
-                (list1[1] == 1))
-    ) result.add(onetoninethousand[0])
+                (list1[1] == 1))) result.add(onetoninethousand[0])
     if (list1[3] > 0) result.add(onetoninehundred[list1[3]])
     if (list1[4] == 1) result.add(tentonineteen[list1[5]])
     if (list1[4] != 1) result.add(twotoninedecade[list1[4]])
