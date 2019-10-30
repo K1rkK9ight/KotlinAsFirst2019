@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import lesson5.task1.removeFillerWords
 import lesson8.task1.findNearestCirclePair
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -119,7 +120,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = sqrt(v.sumByDouble { sqr(it)} )
+fun abs(v: List<Double>): Double = sqrt(v.sumByDouble { sqr(it) })
 
 /**
  * Простая
@@ -159,10 +160,9 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Int>, b: List<Int>): Int {
     var sum = 0
-    if (a.isEmpty() || b.isEmpty()) return 0 else
-        for (i in 0 until (a.size)) {
-            sum += a[i] * b[i]
-        }
+    for (i in 0 until (a.size)) {
+        sum += a[i] * b[i]
+    }
     return sum
 }
 
@@ -177,11 +177,10 @@ fun times(a: List<Int>, b: List<Int>): Int {
 fun polynom(p: List<Int>, x: Int): Int {
     var sum = 0
     var xx = 1
-    if (p.isEmpty()) return 0 else
-        for (i in 0 until (p.size)) {
-            sum += p[i] * xx
-            xx *= x
-        }
+    for (i in 0 until (p.size)) {
+        sum += p[i] * xx
+        xx *= x
+    }
     return sum
 }
 
@@ -197,11 +196,10 @@ fun polynom(p: List<Int>, x: Int): Int {
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     var sum = 0
-    if (list.isEmpty()) return list else
-        for (i in 0 until (list.size)) {
-            list[i] += sum
-            sum = list[i]
-        }
+    for (i in 0 until (list.size)) {
+        list[i] += sum
+        sum = list[i]
+    }
     return list
 }
 
@@ -267,8 +265,8 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = convert(n, base).map { if (it > 9) ('a' + it - 10) else (it) }
-    .joinToString("")
+fun convertToString(n: Int, base: Int): String =
+    convert(n, base).map { if (it > 9) ('a' + it - 10) else (it) }.joinToString("")
 
 
 /**
@@ -301,7 +299,8 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = decimal(str.map { if (it > '9') it - 'a' + 10 else it - '0' }, base)
+fun decimalFromString(str: String, base: Int): Int =
+    decimal(str.map { if (it > '9') it - 'a' + 10 else it - '0' }, base)
 
 /**
  * Сложная
@@ -337,20 +336,20 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    val onetonine = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    val tentonineteen = listOf(
+    val oneToNine = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val tenToNineteen = listOf(
         "десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
         "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
     )
-    val twotoninedecade = listOf(
+    val twoToNineDecade = listOf(
         "", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
         "девяносто"
     )
-    val onetoninehundred = listOf(
+    val oneToNineHundred = listOf(
         "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот",
         "девятьсот"
     )
-    val onetoninethousand = listOf(
+    val oneToNineThousand = listOf(
         "тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
         "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч"
     )
@@ -364,18 +363,15 @@ fun russian(n: Int): String {
         count++
     }
     val list1 = list.reversed()
-    if (list1[0] > 0) result.add(onetoninehundred[list1[0]])
-    if (list1[1] == 1) result.add(tentonineteen[list1[2]])
-    if (list1[1] != 1) result.add(twotoninedecade[list1[1]])
-    if ((list1[1] != 1) && (list1[2] != 0)) result.add(onetoninethousand[list1[2]])
-    if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0 ||
-                (list1[1] == 1))) result.add(onetoninethousand[0])
-    if (list1[3] > 0) result.add(onetoninehundred[list1[3]])
-    if (list1[4] == 1) result.add(tentonineteen[list1[5]])
-    if (list1[4] != 1) result.add(twotoninedecade[list1[4]])
-    if (list1[4] != 1) result.add(onetonine[list1[5]])
-    if ("" in result) {
-        while ("" in result) result.remove("")
-    }
-    return result.joinToString(" ")
+    if (list1[0] > 0) result.add(oneToNineHundred[list1[0]])
+    if (list1[1] == 1) result.add(tenToNineteen[list1[2]])
+    if (list1[1] != 1) result.add(twoToNineDecade[list1[1]])
+    if ((list1[1] != 1) && (list1[2] != 0)) result.add(oneToNineThousand[list1[2]])
+    if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[0] > 0 && list1[1] > 1 && list1[2] == 0
+                || (list1[1] == 1))) result.add(oneToNineThousand[0])
+    if (list1[3] > 0) result.add(oneToNineHundred[list1[3]])
+    if (list1[4] == 1) result.add(tenToNineteen[list1[5]])
+    if (list1[4] != 1) result.add(twoToNineDecade[list1[4]])
+    if (list1[4] != 1) result.add(oneToNine[list1[5]])
+    return result.filter { it > 0.toString() }.joinToString(" ").trim()
 }
