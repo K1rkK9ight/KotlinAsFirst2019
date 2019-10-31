@@ -166,13 +166,12 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     result.putAll(mapA)
     for ((keysA, valuesA) in mapA) {
         for ((keysB, valuesB) in mapB) {
-            if (keysA == keysB && valuesA != valuesB) result.put(keysA, valuesA + ", " + valuesB)
+            if (keysA == keysB && valuesA != valuesB) result[keysA] = valuesA + ", " 
             else if (keysA != keysB) result.put(keysB, valuesB)
         }
     }
     return result
 }
-
 /**
  * Средняя
  *
@@ -242,16 +241,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var count = 0
-    word.toSet()
-    for (char1 in chars) {
-        for (char2 in word) {
-            if (char1 == char2) count++
-        }
-    }
-    return count == word.length
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+    word.toLowerCase().all { it in chars.map { char -> char.toLowerCase() } }
 
 
 /**
@@ -268,13 +259,12 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val result = mutableMapOf<String, Int>()
-    var count = 1
+    val count = 1
     for (string in list) {
-        if (string !in result) {
-            result.put(string, count)
+        if (string in result) {
+            result[string] = result[string]!! + 1
         } else {
-            count++
-            result[string] = count
+            result.put(string, count)
         }
     }
     return result.filter { it.value > 1 }
@@ -293,8 +283,8 @@ fun hasAnagrams(words: List<String>): Boolean {
     for (n in words.indices) {
         for (i in words.indices) {
             if (words[n] != words[i] && words[n].toSortedSet() == words[i].toSortedSet()
-                || (words[n].isEmpty() && words[i].isEmpty())
-            ) return true
+                || (words[n].isEmpty() && words[i].isEmpty()
+                        || (words[i].length == words[n].length && words[i].length < 2))) return true
         }
     }
     return false
