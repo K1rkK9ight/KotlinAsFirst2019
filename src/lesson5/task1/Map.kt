@@ -5,6 +5,7 @@ package lesson5.task1
 import javafx.beans.binding.MapBinding
 import kotlinx.html.MAP
 import kotlinx.html.attributes.stringSetDecode
+import ru.spbstu.kotlin.typeclass.kind
 import kotlin.math.max
 
 /**
@@ -161,17 +162,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().int
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    val result = mutableMapOf<String, String>()
-    result.putAll(mapA)
-    for ((keysA, valuesA) in mapA) {
-        for ((keysB, valuesB) in mapB) {
-            if (keysA == keysB && valuesA != valuesB) result[keysA] = valuesA + ", " 
-            else if (keysA != keysB) result.put(keysB, valuesB)
-        }
-    }
-    return result
-}
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
 /**
  * Средняя
  *
@@ -333,7 +324,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (number1 in list.indices) {
+        if ((number - number1) in list) {
+            return Pair(list.indexOf(number1), list.indexOf(number - number1))
+        }
+    }
+    return Pair(-1, -1)
+}
+
 
 /**
  * Очень сложная
