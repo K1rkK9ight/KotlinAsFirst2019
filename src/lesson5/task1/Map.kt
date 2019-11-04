@@ -280,8 +280,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     for (n in words.indices) {
         for (k in words.indices) {
-            if (words[n] != words[k] && (words[n].toSortedSet() == words[k].toSortedSet()
-                        || words[n].isEmpty() == words[k].isEmpty())
+            if (words[n] != words[k] && words[n].toSortedSet() == words[k].toSortedSet()
+                || (words[n].isEmpty() && words[k].isEmpty()) || words[n] == words[k] && n != k
             ) return true
         }
     }
@@ -332,6 +332,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    if (list.size == 1) return Pair(-1, -1)
     for (number1 in list.indices) {
         if ((number - number1) in list) {
             return Pair(list.indexOf(number1), list.indexOf(number - number1))
