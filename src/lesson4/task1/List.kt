@@ -353,7 +353,7 @@ fun russian(n: Int): String {
         "тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
         "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч"
     )
-    val list = mutableListOf(0,0,0,0,0,0)
+    val list = mutableListOf(0, 0, 0, 0, 0, 0)
     var number = n
     var count = 0
     val result = mutableListOf<String>()
@@ -365,13 +365,12 @@ fun russian(n: Int): String {
     val list1 = list.reversed()
     if (list1[0] > 0) result.add(oneToNineHundred[list1[0]])
     if (list1[1] == 1) result.add(tenToNineteen[list1[2]])
-    if (list1[1] != 1) result.add(twoToNineDecade[list1[1]])
-    if ((list1[1] != 1) && (list1[2] != 0)) result.add(oneToNineThousand[list1[2]])
-    if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[1] > 1 && list1[2] == 0)
-        || (list1[1] == 1)) result.add(oneToNineThousand[0])
+    else result.add(twoToNineDecade[list1[1]])
+    if (list1[1] != 1 && list1[2] != 0) result.add(oneToNineThousand[list1[2]])
+    if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[1] > 1 && list1[2] == 0) || (list1[1] == 1)
+    ) result.add(oneToNineThousand[0])
     if (list1[3] > 0) result.add(oneToNineHundred[list1[3]])
     if (list1[4] == 1) result.add(tenToNineteen[list1[5]])
-    if (list1[4] != 1) result.add(twoToNineDecade[list1[4]])
-    if (list1[4] != 1) result.add(oneToNine[list1[5]])
+    else result.add(twoToNineDecade[list1[4]]) && result.add(oneToNine[list1[5]])
     return result.filter { it > 0.toString() }.joinToString(" ").trim()
 }

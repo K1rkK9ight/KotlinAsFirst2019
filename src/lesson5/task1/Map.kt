@@ -96,7 +96,13 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val result = mutableMapOf<Int, List<String>>()
+    for ((keys, values) in grades) {
+        result[values] = result.getOrDefault(values, mutableListOf()).plus(keys)
+    }
+    return result
+}
 
 /**
  * Простая
@@ -333,9 +339,9 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     if (list.size == 1) return Pair(-1, -1)
-    for (number1 in list.indices) {
-        if ((number - number1) in list) {
-            return Pair(list.indexOf(number1), list.indexOf(number - number1))
+    for (k in list.indices) {
+        for (n in 1 until list.size) {
+            if (k != n && list[k] + list[n] == number) return Pair(k, n)
         }
     }
     return Pair(-1, -1)
@@ -381,6 +387,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             } else tableA[k][s] = tableA[k - 1][s]
         }
     }
+    // findAns - рекурсивная функция(нахождение предметов входящих в рюкзак)
     fun findAns(k: Int, s: Int) {
         if (tableA[k][s] == 0) return
         if (tableA[k - 1][s] == tableA[k][s]) {
