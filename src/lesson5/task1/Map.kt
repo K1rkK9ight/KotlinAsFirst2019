@@ -5,7 +5,6 @@ package lesson5.task1
 import javafx.beans.binding.MapBinding
 import kotlinx.html.MAP
 import kotlinx.html.attributes.stringSetDecode
-import ru.spbstu.kotlin.typeclass.kind
 import kotlin.math.max
 
 /**
@@ -162,7 +161,18 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().int
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    val result = mutableMapOf<String, String>()
+    result.putAll(mapA)
+    for ((keysA, valuesA) in mapA) {
+        for ((keysB, valuesB) in mapB) {
+            if (keysB !in result) result[keysB] = valuesB
+            if (keysA == keysB && valuesA != valuesB) result[keysA] = "$valuesA, $valuesB"
+        }
+    }
+    return result
+}
+
 /**
  * Средняя
  *
@@ -252,11 +262,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
     val result = mutableMapOf<String, Int>()
     val count = 1
     for (string in list) {
-        if (string in result) {
-            result[string] = result[string]!! + 1
-        } else {
-            result.put(string, count)
-        }
+        if (string in result) result[string] = result[string]!! + 1
+        else result[string] = count
     }
     return result.filter { it.value > 1 }
 }
@@ -272,10 +279,10 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  */
 fun hasAnagrams(words: List<String>): Boolean {
     for (n in words.indices) {
-        for (i in words.indices) {
-            if (words[n] != words[i] && words[n].toSortedSet() == words[i].toSortedSet()
-                || (words[n].isEmpty() && words[i].isEmpty()
-                        || (words[i].length == words[n].length && words[i].length < 2))) return true
+        for (k in words.indices) {
+            if (words[n] != words[k] && (words[n].toSortedSet() == words[k].toSortedSet()
+                        || words[n].isEmpty() == words[k].isEmpty())
+            ) return true
         }
     }
     return false
@@ -355,4 +362,33 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val tableA = Array(treasures.size + 1) { Array(capacity + 1) { 0 } }
+    val result = mutableSetOf<String>()
+    val weight = mutableListOf(0)
+    val price = mutableListOf(0)
+    val name = mutableListOf("")
+    for (k in 1..treasures.size) {
+        for (s in 1..capacity) {
+            for ((keys, values) in treasures) {
+                weight.add(values.first)
+                price.add(values.second)
+                name.add(keys)
+            }
+            if (s >= weight[k]) {
+                tableA[k][s] = maxOf(tableA[k - 1][s], tableA[k - 1][s - weight[k]] + price[k])
+            } else tableA[k][s] = tableA[k - 1][s]
+        }
+    }
+    fun findAns(k: Int, s: Int) {
+        if (tableA[k][s] == 0) return
+        if (tableA[k - 1][s] == tableA[k][s]) {
+            findAns(k - 1, s)
+        } else {
+            findAns(k - 1, s - weight[k])
+            result.add(name[k])
+        }
+    }
+    findAns(treasures.size, capacity)
+    return result
+}
