@@ -2,10 +2,6 @@
 
 package lesson5.task1
 
-import javafx.beans.binding.MapBinding
-import kotlinx.html.MAP
-import kotlinx.html.attributes.stringSetDecode
-import kotlin.math.max
 
 /**
  * Пример
@@ -135,7 +131,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
     for ((keys, values) in b) {
         if (a[keys] == values) a.remove(keys, values)
     }
@@ -229,11 +225,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var min = Double.MAX_VALUE
     result = null
     for ((keys, values) in stuff) {
-        if (values.first == kind) {
-            if (values.second <= min) {
-                result = keys
-                min = values.second
-            }
+        if (values.first == kind && values.second <= min) {
+            result = keys
+            min = values.second
         }
     }
     return result
@@ -340,8 +334,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     if (list.size == 1) return Pair(-1, -1)
     for (k in list.indices) {
-        for (n in 1 until list.size) {
-            if (k != n && list[k] + list[n] == number) return Pair(k, n)
+        if ((number - list[k]) in list && list.indexOf(number - list[k]) != k) {
+            return Pair(k, list.indexOf(number - list[k]))
         }
     }
     return Pair(-1, -1)
@@ -372,9 +366,9 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val tableA = Array(treasures.size + 1) { Array(capacity + 1) { 0 } }
     val result = mutableSetOf<String>()
-    val weight = mutableListOf(0)
-    val price = mutableListOf(0)
-    val name = mutableListOf("")
+    val weight = mutableListOf<Int>()
+    val price = mutableListOf<Int>()
+    val name = mutableListOf<String>()
     for (k in 1..treasures.size) {
         for (s in 1..capacity) {
             for ((keys, values) in treasures) {

@@ -145,9 +145,9 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val del = mean(list)
+    val minusAverage = mean(list)
     for (i in 0 until list.size)
-        list[i] -= del
+        list[i] -= minusAverage
     return list
 }
 
@@ -353,24 +353,54 @@ fun russian(n: Int): String {
         "тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи", "пять тысяч",
         "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч"
     )
-    val list = mutableListOf(0, 0, 0, 0, 0, 0)
+    val list = mutableListOf<Int>()
     var number = n
     var count = 0
     val result = mutableListOf<String>()
     while (number > 0) {
-        list[count] = (number % 10)
+        list.add(number % 10)
         number /= 10
         count++
     }
     val list1 = list.reversed()
-    if (list1[0] > 0) result.add(oneToNineHundred[list1[0]])
-    if (list1[1] == 1) result.add(tenToNineteen[list1[2]])
-    else result.add(twoToNineDecade[list1[1]])
-    if (list1[1] != 1 && list1[2] != 0) result.add(oneToNineThousand[list1[2]])
-    if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[1] > 1 && list1[2] == 0) || (list1[1] == 1)
-    ) result.add(oneToNineThousand[0])
-    if (list1[3] > 0) result.add(oneToNineHundred[list1[3]])
-    if (list1[4] == 1) result.add(tenToNineteen[list1[5]])
-    else result.add(twoToNineDecade[list1[4]]) && result.add(oneToNine[list1[5]])
-    return result.filter { it > 0.toString() }.joinToString(" ").trim()
+    if (n > 99999) {
+        if (list1[0] > 0) result.add(oneToNineHundred[list1[0]])
+        if (list1[1] == 1) result.add(tenToNineteen[list1[2]])
+        else result.add(twoToNineDecade[list1[1]])
+        if (list1[1] != 1 && list1[2] != 0) result.add(oneToNineThousand[list1[2]])
+        if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[1] > 1 && list1[2] == 0) || (list1[1] == 1)
+        ) result.add(oneToNineThousand[0])
+        if (list1[3] > 0) result.add(oneToNineHundred[list1[3]])
+        if (list1[4] == 1) result.add(tenToNineteen[list1[5]])
+        else result.add(twoToNineDecade[list1[4]]) && result.add(oneToNine[list1[5]])
+    }
+    if (n in 10000..99999) {
+        if (list1[0] == 1) result.add(tenToNineteen[list1[1]])
+        else result.add(twoToNineDecade[list1[0]])
+        if (list1[0] != 1 && list1[1] != 0) result.add(oneToNineThousand[list1[1]])
+        if ((list1[0] == 0 && list1[1] == 0) || (list1[0] > 1 && list1[1] == 0) || (list1[0] == 1)
+        ) result.add(oneToNineThousand[0])
+        if (list1[2] > 0) result.add(oneToNineHundred[list1[2]])
+        if (list1[3] == 1) result.add(tenToNineteen[list1[4]])
+        else result.add(twoToNineDecade[list1[3]]) && result.add(oneToNine[list1[4]])
+    }
+    if (n in 1000..9999) {
+        if (list1[0] > 0) result.add(oneToNineThousand[list1[0]])
+        if (list1[1] > 0) result.add(oneToNineHundred[list1[1]])
+        if (list1[2] == 1) result.add(tenToNineteen[list1[3]])
+        else result.add(twoToNineDecade[list1[2]]) && result.add(oneToNine[list1[3]])
+    }
+    if (n in 100..999) {
+        if (list1[0] > 0) result.add(oneToNineHundred[list1[0]])
+        if (list1[1] == 1) result.add(tenToNineteen[list1[2]])
+        else result.add(twoToNineDecade[list1[1]]) && result.add(oneToNine[list1[2]])
+    }
+    if (n in 10..99) {
+        if (list1[0] == 1) result.add(tenToNineteen[list1[1]])
+        else result.add(twoToNineDecade[list1[0]]) && result.add(oneToNine[list1[1]])
+    }
+    if (n < 10) {
+        result.add(oneToNine[list1[0]])
+    }
+    return result.filter { it != "" }.joinToString(" ").trim()
 }
