@@ -2,7 +2,10 @@
 
 package lesson7.task1
 
+import kotlinx.html.dom.write
 import java.io.File
+import java.io.Writer
+import java.util.function.ToDoubleBiFunction
 
 /**
  * Пример
@@ -53,7 +56,27 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val result = mutableMapOf<String, Int>()
+    for (word in substrings) {
+        result[word] = 0
+    }
+    val reader = File(inputName).readLines()
+    var count = 0
+    for (line in reader) {
+        for (word in line.split(" ")) {
+            for ((keys) in result) {
+                var length = keys.length
+                if (keys.toLowerCase() in word.toLowerCase()) count++
+                if (count > 0) {
+                    result[keys] = result[keys]!! + 1
+                    count = 0
+                }
+            }
+        }
+    }
+    return result
+}
 
 
 /**
@@ -70,9 +93,34 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter().use {
+        val reader = File(inputName).readLines()
+        val findSymbol = listOf("ж", "ч", "ш", "щ", "Ж", "Ч", "Ш", "Щ")
+        val badList = listOf("ы", "я", "ю", "Ы", "Я", "Ю")
+        val goodList = listOf("и", "а", "у", "И", "А", "У")
+        for (line in reader) {
+            for (word in line.split(" ")) {
+                var count = 0
+                var index = 0
+                while (count < word.length - 1) {
+                    if (word[count].toString() in findSymbol && word[count + 1].toString() in badList) {
+                        for (element in badList) {
+                            if (word[count + 1].toString() == element) break
+                            else index++
+                        }
+                        it.write(word[count].toString())
+                        it.write(goodList[index])
+                        count + 2
+                        index = 0
+                    } else {
+                        it.write(word[count].toString())
+                        count++
+                    }
+                }
+            }
+        }
+    }
 }
-
 /**
  * Средняя
  *
@@ -91,7 +139,18 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter().use {
+        val reader = File(inputName).readLines()
+        var maxLength = 0
+        for (line in reader) {
+            if (line.length > maxLength) maxLength = line.length
+        }
+        for (line in reader) {
+            while (line.length < maxLength) {
+                line.tri
+            }
+        }
+    }
 }
 
 /**
