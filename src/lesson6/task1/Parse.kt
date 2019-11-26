@@ -89,7 +89,7 @@ fun dateStrToDigit(str: String): String {
                 } else count++
             }
             if (count == 2 && day == 29 && (year % 400 != 0 || year % 4 != 0)) return ""
-            return String.format("%02d.%02d.%4d", day, count, year)
+            return String.format("%02d.%02d.%d", day, count, year)
         }
     } catch (e: Exception) {
         return ""
@@ -119,7 +119,7 @@ fun dateDigitToStr(digital: String): String {
         val year = split[2].toInt()
         if (month == 2 && day == 29 && (year % 400 != 0 || year % 4 != 0)) return ""
         if (day in 1..31 && month in 1..12 && split.size == 3) {
-            return String.format("%2d %s %4d", day, months[month], year).trim()
+            return String.format("%2d %s %d", day, months[month], year).trim()
         }
         return ""
     } catch (e: Exception) {
@@ -225,7 +225,7 @@ fun plusMinus(expression: String): Int {
     )
     for (element in split) {
         if (element in badList || element in plusMinus && element + 1 in plusMinus
-            || element in symbol && element + 1 in symbol
+            || element in symbol && element + 1 in symbol || expression.isEmpty()
         ) throw excep
     }
 
@@ -286,6 +286,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
+    if (roman.isEmpty()) return -1
     var index = 0
     var index1 = 0
     var index2 = 0
