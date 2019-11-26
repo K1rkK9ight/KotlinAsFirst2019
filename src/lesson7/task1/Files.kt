@@ -147,7 +147,6 @@ fun centerFile(inputName: String, outputName: String) {
         }
         for (line in reader) {
             while (line.length < maxLength) {
-                line.tri
             }
         }
     }

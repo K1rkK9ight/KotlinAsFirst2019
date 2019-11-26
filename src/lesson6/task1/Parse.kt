@@ -289,7 +289,7 @@ fun fromRoman(roman: String): Int {
     var index = 0
     var index1 = 0
     var index2 = 0
-    var result = 0
+    val count: Char = roman.last()
     val list = mutableListOf<Char>()
     var minusNumber = 0
     val romanNumber = listOf(
@@ -300,28 +300,31 @@ fun fromRoman(roman: String): Int {
     for (element in roman) {
         list.add(element)
     }
-    for (i in 0..list.size - 2) {
+    try {
         for (element in romanNumber) {
-            if (list[i].toString() == element) break
-            else index++
+            if (count.toString() == element) break
+            else index2++
         }
-        for (element in romanNumber) {
-            if (list[i + 1].toString() == element) break
-            else index1++
+        var result = arab[index2]
+        for (i in 0..list.size - 2) {
+            for (element in romanNumber) {
+                if (list[i].toString() == element) break
+                else index++
+            }
+            for (element in romanNumber) {
+                if (list[i + 1].toString() == element) break
+                else index1++
+            }
+            if (index1 > index) {
+                minusNumber += arab[index]
+            } else result += arab[index]
+            index = 0
+            index1 = 0
         }
-        if (index1 > index) {
-            minusNumber += arab[index]
-        } else result += arab[index]
-        index = 0
-        index1 = 0
+        return result - minusNumber
+    } catch (e: Exception) {
+        return -1
     }
-    val last = list.size - 2
-    for (element in romanNumber) {
-        if (list[last].toString() == element) break
-        else index2++
-    }
-    result += arab[index2]
-    return result - minusNumber
 }
 
 /**
