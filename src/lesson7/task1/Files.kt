@@ -66,7 +66,6 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     for (line in reader) {
         for (word in line.split(" ")) {
             for ((keys) in result) {
-                var length = keys.length
                 if (keys.toLowerCase() in word.toLowerCase()) count++
                 if (count > 0) {
                     result[keys] = result[keys]!! + 1
@@ -145,10 +144,7 @@ fun centerFile(inputName: String, outputName: String) {
         for (line in reader) {
             if (line.length > maxLength) maxLength = line.length
         }
-        for (line in reader) {
-            while (line.length < maxLength) {
-            }
-        }
+
     }
 }
 
