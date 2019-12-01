@@ -88,7 +88,7 @@ fun dateStrToDigit(str: String): String {
                     break
                 } else count++
             }
-            if (count == 2 && day == 29 && (year % 400 != 0 || year % 4 != 0)) return ""
+            if (count == 2 && day > 28 && (year % 400 != 0 || year % 4 != 0)) return ""
             return String.format("%02d.%02d.%d", day, count, year)
         }
     } catch (e: Exception) {
@@ -117,7 +117,7 @@ fun dateDigitToStr(digital: String): String {
         val day = split[0].toInt()
         val month = split[1].toInt()
         val year = split[2].toInt()
-        if (month == 2 && day == 29 && (year % 400 != 0 || year % 4 != 0)) return ""
+        if (month == 2 && day > 28 && (year % 400 != 0 || year % 4 != 0)) return ""
         if (day in 1..31 && month in 1..12 && split.size == 3) {
             return String.format("%2d %s %d", day, months[month], year).trim()
         }
@@ -146,7 +146,7 @@ fun flattenPhoneNumber(phone: String): String {
     val symbol = listOf("-", "+", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "(", ")")
     var result = ""
     val symbolNot = listOf("-", "(", ")")
-    if ("()" in phone) return ""
+    if (!phone.matches(Regex("""(\+[0-9])?[[0-9]\s\-]*(\([[0-9]\s\-]+\))?[[0-9]\s\-]*"""))) return ""
     for (char in phone) {
         if (char !in symbol.toString()) return ""
         else if (char !in symbolNot.toString()) result += char
@@ -218,15 +218,11 @@ fun plusMinus(expression: String): Int {
     val symbol = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
     var result = 0
     val plusMinus = listOf("+", "-")
-    val excep = IllegalArgumentException()
-    val badList = listOf(
-        "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+0",
-        "-1", "-2", "-3", "-4", "-5", "-6", "-7", "-8", "-9", "-0"
-    )
+    val exception = IllegalArgumentException()
     for (element in split) {
-        if (element in badList || element in plusMinus && element + 1 in plusMinus
+        if (element.contains(Regex("""[+-]+\d+""")) || element in plusMinus && element + 1 in plusMinus
             || element in symbol && element + 1 in symbol || expression.isEmpty()
-        ) throw excep
+        ) throw exception
     }
 
     result += split[0].toInt()
@@ -299,33 +295,30 @@ fun fromRoman(roman: String): Int {
     )
     val arab = listOf(0, 1, 5, 10, 50, 100, 500, 1000)
     for (element in roman) {
+        if (element.toString() !in romanNumber) return -1
         list.add(element)
     }
-    try {
-        for (element in romanNumber) {
-            if (count.toString() == element) break
-            else index2++
-        }
-        var result = arab[index2]
-        for (i in 0..list.size - 2) {
-            for (element in romanNumber) {
-                if (list[i].toString() == element) break
-                else index++
-            }
-            for (element in romanNumber) {
-                if (list[i + 1].toString() == element) break
-                else index1++
-            }
-            if (index1 > index) {
-                minusNumber += arab[index]
-            } else result += arab[index]
-            index = 0
-            index1 = 0
-        }
-        return result - minusNumber
-    } catch (e: Exception) {
-        return -1
+    for (element in romanNumber) {
+        if (count.toString() == element) break
+        else index2++
     }
+    var result = arab[index2]
+    for (i in 0..list.size - 2) {
+        for (element in romanNumber) {
+            if (list[i].toString() == element) break
+            else index++
+        }
+        for (element in romanNumber) {
+            if (list[i + 1].toString() == element) break
+            else index1++
+        }
+        if (index1 > index) {
+            minusNumber += arab[index]
+        } else result += arab[index]
+        index = 0
+        index1 = 0
+    }
+    return result - minusNumber
 }
 
 /**

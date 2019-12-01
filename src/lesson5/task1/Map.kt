@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import kotlin.math.sign
+
 
 /**
  * Пример
@@ -166,11 +168,9 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().int
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val result = mutableMapOf<String, String>()
     result.putAll(mapA)
-    for ((keysA, valuesA) in mapA) {
-        for ((keysB, valuesB) in mapB) {
-            if (keysB !in result) result[keysB] = valuesB
-            if (keysA == keysB && valuesA != valuesB) result[keysA] = "$valuesA, $valuesB"
-        }
+    for ((keys, values) in mapB) {
+        if (mapB[keys] !in result) result[keys] = result.getOrDefault(keys, values)
+        if (result[keys] != values) result[keys] += ", $values"
     }
     return result
 }
@@ -198,9 +198,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
         }
     }
     for ((keys, values) in result) {
-        for ((keysC, valuesC) in count) {
-            if (keys == keysC) result[keys] = values / valuesC
-        }
+        result[keys] = values / count[keys]!!
     }
     return result
 }
@@ -243,8 +241,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    word.toLowerCase().all { it in chars.map { char -> char.toLowerCase() } }
-
+    chars.toSet().map { it.toLowerCase() }.intersect(word.toLowerCase().toSet()) == word.toLowerCase().toSet()
 
 /**
  * Средняя
@@ -277,16 +274,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean {
-    for (n in words.indices) {
-        for (k in words.indices) {
-            if (words[n] != words[k] && words[n].toSortedSet() == words[k].toSortedSet()
-                || (words[n].isEmpty() && words[k].isEmpty()) || words[n] == words[k] && n != k
-            ) return true
-        }
-    }
-    return false
-}
+fun hasAnagrams(words: List<String>): Boolean =
+    words.map { it.toSet() }.toSet().size < words.size
 
 /**
  * Сложная
@@ -332,10 +321,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    if (list.size == 1) return Pair(-1, -1)
     for (k in list.indices) {
-        if ((number - list[k]) in list && list.indexOf(number - list[k]) != k) {
-            return Pair(k, list.indexOf(number - list[k]))
+        if ((number - list[k]) in list) {
+            val second = number - list[k]
+            if (list.indexOf(second) != k) return Pair(k, list.indexOf(second))
         }
     }
     return Pair(-1, -1)
@@ -369,6 +358,12 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val weight = mutableListOf<Int>()
     val price = mutableListOf<Int>()
     val name = mutableListOf<String>()
+    if (treasures.size == 1) {
+        //В ситуации, когда на входе мы имеем только одно сокровище, добовляем пустые элементы в списки, чтобы избежать ошибки индексации
+        weight += 0
+        price += 0
+        name += ""
+    }
     for (k in 1..treasures.size) {
         for (s in 1..capacity) {
             for ((keys, values) in treasures) {
