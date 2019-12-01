@@ -88,7 +88,8 @@ fun dateStrToDigit(str: String): String {
                     break
                 } else count++
             }
-            if (count == 2 && day > 28 && (year % 400 != 0 || year % 4 != 0)) return ""
+            if (count == 2 && day > 28 && ((year % 4 == 0 && year % 100 == 0 && year % 400 != 0) || year % 4 != 0)
+            ) return ""
             return String.format("%02d.%02d.%d", day, count, year)
         }
     } catch (e: Exception) {

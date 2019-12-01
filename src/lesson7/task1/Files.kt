@@ -187,7 +187,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
             val spaceDiv = (maxLength - lineLength) / (wordsInLine - 1)
             var spaceMod = (maxLength - lineLength) % (wordsInLine - 1)
             var result = " "
-            for (i in 0 until wordsInLine) {
+            for (i in 0 until wordsInLine - 1) {
                 result += word[i] + " "
                 while (count < spaceDiv) {
                     result += " "
@@ -199,6 +199,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
                     spaceMod -= 1
                 }
             }
+            result += word.last()
             writer.write(result.trim())
             writer.newLine()
         }
