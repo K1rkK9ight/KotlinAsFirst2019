@@ -2,12 +2,9 @@
 
 package lesson7.task1
 
-import kotlinx.html.dom.write
-import lesson5.task1.buildGrades
 import java.io.File
 import java.io.Writer
 import java.util.function.ToDoubleBiFunction
-import kotlin.math.max
 
 /**
  * Пример
@@ -127,7 +124,7 @@ fun centerFile(inputName: String, outputName: String) {
     }
     for (line in reader) {
         if (maxLength % 2 == 0) {
-            while (space.length * 2 + line.trim().length < maxLength) {
+            while ((space.length * 2 + 1) + line.trim().length < maxLength) {
                 space += " "
             }
         } else while ((space.length * 2 + 1) + line.trim().length < maxLength) {
@@ -174,32 +171,34 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     var maxLength = 0
     var count = 0
     for (line in reader) {
-        if (line.trim().length > maxLength) maxLength = line.trim().length
+        val line1 = line.trim().replace(" ", "").length
+        val wordInMax = line.trim().split(" ").toList().size
+        if (line1 + wordInMax - 1 > maxLength) maxLength = line1 + wordInMax - 1
     }
     for (line in reader) {
         if (line.trim().split(" ").size == 1 || line.trim().length == maxLength || line == "") {
             writer.write(line.trim())
             writer.newLine()
         } else {
-            val lineLength = line.trim().length
-            val word = line.trim().split(" ").toMutableList()
+            val lineLength = line.trim().replace(" ", "").length
+            val word = line.trim().split(" ").filter { it.isNotEmpty() }.toList()
             val wordsInLine = word.size
             val spaceDiv = (maxLength - lineLength) / (wordsInLine - 1)
             var spaceMod = (maxLength - lineLength) % (wordsInLine - 1)
-            var result = " "
+            val result = mutableListOf<String>()
             for (i in 0 until wordsInLine) {
-                result += word[i] + " "
+                result.add(word[i])
                 while (count < spaceDiv) {
-                    result += " "
+                    result.add(" ")
                     count++
                 }
                 count = 0
                 if (spaceMod > 0) {
-                    result += " "
+                    result.add(" ")
                     spaceMod -= 1
                 }
             }
-            writer.write(result.trim())
+            writer.write(result.joinToString("").trim())
             writer.newLine()
         }
     }
@@ -226,7 +225,6 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  */
 fun top20Words(inputName: String): Map<String, Int> {
     val wordArray = mutableMapOf<String, Int>()
-    var count = 0
     val result = mutableMapOf<String, Int>()
     val reader = File(inputName).readLines()
     for (line in reader) {
@@ -236,13 +234,9 @@ fun top20Words(inputName: String): Map<String, Int> {
         }
     }
     if (wordArray.size <= 20) return wordArray
-    val wordArray1 = wordArray.toList().sortedBy { it.second }.reversed().toMap()
+    val wordArray1 = wordArray.toList().sortedBy { it.second }.reversed().take(20).toMap()
     for ((keys, values) in wordArray1) {
-        if (count >= 20) break
-        else {
-            result[keys] = values
-            count++
-        }
+        result[keys] = values
     }
     return result
 }
@@ -313,18 +307,19 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val reader = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
-    var result = ""
+    val result = mutableListOf<String>()
     var maxLength = 0
     for (line in reader) {
         if (line.length == maxLength && line.length == line.toLowerCase().toSet().size) {
-            result += ", $line"
+            result += line
         }
         if (line.length > maxLength && line.length == line.toLowerCase().toSet().size) {
             maxLength = line.length
-            result += ", $line"
+            result.clear()
+            result += line
         }
     }
-    writer.write(result.removePrefix(", "))
+    writer.write(result.joinToString(", "))
     writer.close()
 }
 

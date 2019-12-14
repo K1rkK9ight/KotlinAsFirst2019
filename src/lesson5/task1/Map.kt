@@ -2,7 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.math.sign
 
 
 /**
@@ -275,7 +274,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean =
-    words.map { it.toSet() }.toSet().size < words.size
+    words.map { it.toList().sorted() }.toSet().size < words.size
 
 /**
  * Сложная
@@ -358,22 +357,22 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val weight = mutableListOf<Int>()
     val price = mutableListOf<Int>()
     val name = mutableListOf<String>()
-    if (treasures.size == 1) {
-        //В ситуации, когда на входе мы имеем только одно сокровище, добовляем пустые элементы в списки, чтобы избежать ошибки индексации
-        weight += 0
-        price += 0
-        name += ""
+    for ((key, value) in treasures) {
+        if (treasures.size == 1) {
+            return if (value.first == capacity) treasures.keys
+            else result
+        }
     }
-    for (k in 1..treasures.size) {
+    for (k in 0..treasures.size - 1) {
         for (s in 1..capacity) {
             for ((keys, values) in treasures) {
                 weight.add(values.first)
                 price.add(values.second)
                 name.add(keys)
             }
-            if (s >= weight[k]) {
-                tableA[k][s] = maxOf(tableA[k - 1][s], tableA[k - 1][s - weight[k]] + price[k])
-            } else tableA[k][s] = tableA[k - 1][s]
+            if (s >= weight[k + 1]) {
+                tableA[k + 1][s] = maxOf(tableA[k][s], tableA[k][s - weight[k + 1]] + price[k + 1])
+            } else tableA[k + 1][s] = tableA[k][s]
         }
     }
     // findAns - рекурсивная функция(нахождение предметов входящих в рюкзак)

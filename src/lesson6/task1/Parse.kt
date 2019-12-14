@@ -4,6 +4,7 @@ package lesson6.task1
 
 import lesson2.task2.daysInMonth
 import lesson5.task1.removeFillerWords
+import java.lang.IndexOutOfBoundsException
 
 /**
  * Пример
@@ -72,27 +73,22 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+val months = mapOf(
+    "" to 0, "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5, "июня" to 6,
+    "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12
+)
+
 fun dateStrToDigit(str: String): String {
-    val months = listOf(
-        "", "января", "февраля", "марта", "апреля", "мая", "июня",
-        "июля", "августа", "сентября", "октября", "ноября", "декабря"
-    )
     val split = str.split(" ")
-    var count = 0
     try {
         val day = split[0].toInt()
         val year = split[2].toInt()
         if (split[1] in months && day in 1..31 && split.size == 3) {
-            for (element in months) {
-                if (element == split[1]) {
-                    break
-                } else count++
-            }
-            if (count == 2 && day > 28 && ((year % 4 == 0 && year % 100 == 0 && year % 400 != 0) || year % 4 != 0)
-            ) return ""
-            return String.format("%02d.%02d.%d", day, count, year)
+            val month = months[split[1]]
+            if (day > daysInMonth(month!!, year) || day < 0 || month !in 1..12 || split.size != 3) return ""
+            return String.format("%02d.%02d.%d", day, month, year)
         }
-    } catch (e: Exception) {
+    } catch (e: IndexOutOfBoundsException) {
         return ""
     }
     return ""
@@ -109,21 +105,25 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val months = listOf(
-        "", "января", "февраля", "марта", "апреля", "мая", "июня", "июля",
-        "августа", "сентября", "октября", "ноября", "декабря"
-    )
     val split = digital.split(".")
     try {
         val day = split[0].toInt()
         val month = split[1].toInt()
         val year = split[2].toInt()
-        if (month == 2 && day > 28 && (year % 400 != 0 || year % 4 != 0)) return ""
+        var count = ""
+        for ((keys, values) in months) {
+            if (values > month) break
+            else {
+                count = keys
+                continue
+            }
+        }
+        if (day > daysInMonth(month, year) || day < 0 || month !in 1..12 || split.size != 3) return ""
         if (day in 1..31 && month in 1..12 && split.size == 3) {
-            return String.format("%2d %s %d", day, months[month], year).trim()
+            return String.format("%2d %s %d", day, count, year).trim()
         }
         return ""
-    } catch (e: Exception) {
+    } catch (e: IndexOutOfBoundsException) {
         return ""
     }
 }
@@ -144,15 +144,15 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    val symbol = listOf("-", "+", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "(", ")")
-    var result = ""
-    val symbolNot = listOf("-", "(", ")")
-    if (!phone.matches(Regex("""(\+[0-9])?[[0-9]\s\-]*(\([[0-9]\s\-]+\))?[[0-9]\s\-]*"""))) return ""
+    val symbol = setOf('-', '+', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '(', ')', ' ')
+    val result = mutableListOf<Char>()
+    val symbolNot = setOf('-', '(', ')', ' ')
+    if (!phone.matches(Regex("""(\+?\d+)?[\d\s\-]*(\([\d\s\-]+\))?[\d\s\-]*"""))) return ""
     for (char in phone) {
-        if (char !in symbol.toString()) return ""
-        else if (char !in symbolNot.toString()) result += char
+        if (char !in symbol) return ""
+        else if (char !in symbolNot) result.add(char)
     }
-    return result
+    return result.joinToString("")
 }
 
 /**
@@ -166,16 +166,12 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val symbolNot = listOf("-", "%")
-    var result = 0
+    val symbolNot = setOf("-", "%")
+    var result = -1
     val split = jumps.split(" ")
-    try {
-        for (element in split) {
-            if (element !in symbolNot && element.toInt() > result) result = element.toInt()
-            if (result == 0) return -1
-        }
-    } catch (e: Exception) {
-        return -1
+    if (!jumps.matches(Regex("""(\d+|-|%|\s)*"""))) return -1
+    for (element in split) {
+        if (element !in symbolNot && element.toInt() > result) result = element.toInt()
     }
     return result
 }
@@ -192,16 +188,14 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    var result = 0
+    var result = -1
     val split = jumps.split(" ")
-    try {
-        for (i in 0..split.size - 2) {
-            if (split[i + 1] == "+" && split[i].toInt() > result) result = split[i].toInt()
-        }
-    } catch (e: Exception) {
+    if (!jumps.matches(Regex("""((\d+\s[-%+]+\s)*(\d+\s[-%+]+))"""))) {
         return -1
     }
-    if (result == 0) return -1
+    for (i in 0..split.size - 2) {
+        if (split[i + 1] == "+" && split[i].toInt() > result) result = split[i].toInt()
+    }
     return result
 }
 
@@ -216,14 +210,13 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val split = expression.split(" ")
-    val symbol = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+    val symbol = setOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
     var result = 0
-    val plusMinus = listOf("+", "-")
-    val exception = IllegalArgumentException()
+    val plusMinus = setOf("+", "-")
     for (element in split) {
-        if (element.contains(Regex("""[+-]+\d+""")) || element in plusMinus && element + 1 in plusMinus
-            || element in symbol && element + 1 in symbol || expression.isEmpty()
-        ) throw exception
+        require(!(element.contains(Regex("""[-+]+\d|[a-zа-ё]""")) || element in plusMinus && element + 1 in plusMinus
+                || element in symbol && element + 1 in symbol || expression.isEmpty())
+        )
     }
 
     result += split[0].toInt()
@@ -259,13 +252,13 @@ fun firstDuplicateIndex(str: String): Int = TODO()
 fun mostExpensive(description: String): String {
     var result = ""
     var price = 0.0
-    var priceString: String
-    val split = description.split(" ")
-    for (i in 1 until split.size step 2) {
-        priceString = split[i].removeSuffix(";")
-        if (priceString.toDouble() >= price) {
-            price = priceString.toDouble()
-            result = split[i - 1]
+    val split = description.split("; ")
+    if (description.isEmpty()) return result
+    for (element in split) {
+        val elem = element.split(" ")
+        if (elem[1].toDouble() >= price) {
+            price = elem[1].toDouble()
+            result = elem[0]
         }
     }
     return result
@@ -290,7 +283,7 @@ fun fromRoman(roman: String): Int {
     val count: Char = roman.last()
     val list = mutableListOf<Char>()
     var minusNumber = 0
-    val romanNumber = listOf(
+    val romanNumber = setOf(
         "", "I", "V", "X", "L",
         "C", "D", "M"
     )

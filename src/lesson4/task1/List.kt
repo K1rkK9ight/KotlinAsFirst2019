@@ -371,5 +371,5 @@ fun russian(n: Int): String {
     if (list1[3] > 0) result.add(oneToNineHundred[list1[3]])
     if (list1[4] == 1) result.add(tenToNineteen[list1[5]])
     else result.add(twoToNineDecade[list1[4]]) && result.add(oneToNine[list1[5]])
-    return result.filter { it > "" }.joinToString(" ").trim()
+    return result.filter { it.isNotEmpty() }.joinToString(" ").trim()
 }
