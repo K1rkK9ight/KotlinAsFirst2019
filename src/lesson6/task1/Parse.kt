@@ -217,7 +217,7 @@ fun plusMinus(expression: String): Int {
     var result = 0
     val plusMinus = setOf("+", "-")
     for (element in split) {
-        require(!(element.contains(Regex("""[-+]+\d"""))
+        require(!(element.contains(Regex("""[-+]+\d|[a-zа-я]""")) || !element.contains(Regex("""\d+|[+-]+|\s"""))
                 || element in plusMinus && element + 1 in plusMinus
                 || element in symbol && element + 1 in symbol || expression.isEmpty())
         )
