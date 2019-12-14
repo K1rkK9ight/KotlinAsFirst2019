@@ -79,6 +79,7 @@ val months = mapOf(
 )
 
 fun dateStrToDigit(str: String): String {
+    if (str.isEmpty()) return ""
     val split = str.split(" ")
     try {
         val day = split[0].toInt()
@@ -105,6 +106,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
+    if (digital.isEmpty()) return ""
     val split = digital.split(".")
     try {
         val day = split[0].toInt()
@@ -166,6 +168,7 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
+    if (jumps.isEmpty()) return -1
     val symbolNot = setOf("-", "%")
     var result = -1
     val split = jumps.split(" ")
@@ -214,7 +217,8 @@ fun plusMinus(expression: String): Int {
     var result = 0
     val plusMinus = setOf("+", "-")
     for (element in split) {
-        require(!(element.contains(Regex("""[-+]+\d|[a-zа-ё]""")) || element in plusMinus && element + 1 in plusMinus
+        require(!(element.contains(Regex("""[-+]+\d"""))
+                || element in plusMinus && element + 1 in plusMinus
                 || element in symbol && element + 1 in symbol || expression.isEmpty())
         )
     }

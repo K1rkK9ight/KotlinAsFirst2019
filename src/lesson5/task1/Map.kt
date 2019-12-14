@@ -357,9 +357,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val weight = mutableListOf<Int>()
     val price = mutableListOf<Int>()
     val name = mutableListOf<String>()
-    for ((key, value) in treasures) {
-        if (treasures.size == 1) {
-            return if (value.first == capacity) treasures.keys
+    if (treasures.size == 1) {
+        for ((key, value) in treasures) {
+            return if (value.first <= capacity) treasures.keys
             else result
         }
     }

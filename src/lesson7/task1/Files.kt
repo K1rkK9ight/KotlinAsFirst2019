@@ -120,6 +120,7 @@ fun centerFile(inputName: String, outputName: String) {
     var maxLength = 0
     var space = ""
     for (line in reader) {
+        if (reader.size == 1) writer.write(line)
         if (line.trim().length > maxLength) maxLength = line.length
     }
     for (line in reader) {
