@@ -124,7 +124,7 @@ fun centerFile(inputName: String, outputName: String) {
     }
     for (line in reader) {
         if (reader.size == 1) {
-            writer.write(line)
+            writer.write(line.trim())
             break
         }
         if (maxLength % 2 == 0) {

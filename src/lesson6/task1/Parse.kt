@@ -79,18 +79,14 @@ val months = mapOf(
 )
 
 fun dateStrToDigit(str: String): String {
-    if (str.isEmpty()) return ""
     val split = str.split(" ")
-    try {
-        val day = split[0].toInt()
-        val year = split[2].toInt()
-        if (split[1] in months && day in 1..31 && split.size == 3) {
-            val month = months[split[1]]
-            if (day > daysInMonth(month!!, year) || day < 0 || month !in 1..12 || split.size != 3) return ""
-            return String.format("%02d.%02d.%d", day, month, year)
-        }
-    } catch (e: IndexOutOfBoundsException) {
-        return ""
+    if (str.isEmpty() || split.size != 3) return ""
+    val day = split[0].toInt()
+    val year = split[2].toInt()
+    if (split[1] in months && day in 1..31 && split.size == 3) {
+        val month = months[split[1]]
+        if (day > daysInMonth(month!!, year) || day < 0 || month !in 1..12) return ""
+        return String.format("%02d.%02d.%d", day, month, year)
     }
     return ""
 }
@@ -106,28 +102,27 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    if (digital.isEmpty()) return ""
     val split = digital.split(".")
-    try {
-        val day = split[0].toInt()
-        val month = split[1].toInt()
-        val year = split[2].toInt()
-        var count = ""
-        for ((keys, values) in months) {
-            if (values > month) break
-            else {
-                count = keys
-                continue
-            }
+    if (digital.isEmpty() || split.size != 3 || split[0].contains(Regex("""\D"""))
+        || split[1].contains(Regex("""\D""")) || split[2].contains(Regex("""\D"""))
+    ) return ""
+    val day = split[0].toInt()
+    val month = split[1].toInt()
+    val year = split[2].toInt()
+    var count = ""
+    for ((keys, values) in months) {
+        if (values > month) break
+        else {
+            count = keys
+            continue
         }
-        if (day > daysInMonth(month, year) || day < 0 || month !in 1..12 || split.size != 3) return ""
-        if (day in 1..31 && month in 1..12 && split.size == 3) {
-            return String.format("%2d %s %d", day, count, year).trim()
-        }
-        return ""
-    } catch (e: IndexOutOfBoundsException) {
-        return ""
     }
+    if (day > daysInMonth(month, year) || day < 0 || month !in 1..12 || split.size != 3) return ""
+    if (day in 1..31 && month in 1..12 && split.size == 3) {
+        return String.format("%2d %s %d", day, count, year).trim()
+    }
+    return ""
+
 }
 
 
@@ -217,9 +212,10 @@ fun plusMinus(expression: String): Int {
     var result = 0
     val plusMinus = setOf("+", "-")
     for (element in split) {
-        require(!(element.contains(Regex("""[-+]+\d|[a-zа-я]""")) || !element.contains(Regex("""\d+|[+-]+|\s"""))
-                || element in plusMinus && element + 1 in plusMinus
-                || element in symbol && element + 1 in symbol || expression.isEmpty())
+        require(
+            !(element.contains(Regex("""[-+]+\d|[a-zа-я]""")) || !element.contains(Regex("""\d+|[+-]+|\s"""))
+                    || element in plusMinus && element + 1 in plusMinus || split.size == 1 && element in plusMinus
+                    || element in symbol && element + 1 in symbol || expression.isEmpty())
         )
     }
 
