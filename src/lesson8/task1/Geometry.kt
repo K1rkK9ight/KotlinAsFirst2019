@@ -156,7 +156,9 @@ class Line private constructor(val b: Double, val angle: Double) {
      */
     fun crossPoint(other: Line): Point {
         val x = (other.b * cos(angle) - b * cos(other.angle)) / sin(angle - other.angle)
-        val y = (x * sin(angle) + b) / cos(angle)
+        val y: Double
+        if (angle != PI / 2) y = (x * sin(angle) + b) / cos(angle)
+        else y = (x * sin(other.angle) + other.b) / cos(other.angle)
         return Point(x, y)
     }
 
@@ -176,8 +178,17 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line = Line(s.begin, atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x)))
-
+fun lineBySegment(s: Segment): Line {
+    val y = s.end.y - s.begin.y
+    val x = s.end.x - s.begin.x
+    var angle = 0.0
+    if (x > 0.0 && y >= 0.0) angle = atan(y / x)
+    if (x < 0.0 && y >= 0.0) angle = (PI + atan(y / x)) % PI
+    if (x < 0.0 && y <= 0.0) angle = (PI + atan(y / x)) % PI
+    if (x > 0.0 && y <= 0.0) angle = (2 * PI + atan(y / x)) % PI
+    if (x == 0.0) angle = PI / 2
+    return Line(s.begin, angle)
+}
 /**
  * Средняя
  *
@@ -200,7 +211,7 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     if (a.x == b.x) angle = 0.0
     if (a.y == b.y) angle = PI / 2
     if (a.x != b.x && a.y != b.y) angle =
-        atan((segment.end.y - segment.begin.y) / (segment.end.x - segment.begin.x)) + (PI / 2)
+        atan((((segment.end.y - segment.begin.y) / (segment.end.x - segment.begin.x)) + (PI / 2)) % PI)
     return Line(pointC, angle)
 }
 
@@ -236,7 +247,12 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
+    val lineBCBisector = bisectorByPoints(b, c)
+    val center = bisectorByPoints(a, b).crossPoint(lineBCBisector)
+    val radius = a.distance(center)
+    return Circle(center, radius)
+}
 
 /**
  * Очень сложная
