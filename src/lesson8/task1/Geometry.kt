@@ -157,8 +157,8 @@ class Line private constructor(val b: Double, val angle: Double) {
     fun crossPoint(other: Line): Point {
         val x = (other.b * cos(angle) - b * cos(other.angle)) / sin(angle - other.angle)
         val y: Double
-        if (angle != PI / 2) y = (x * sin(angle) + b) / cos(angle)
-        else y = (x * sin(other.angle) + other.b) / cos(other.angle)
+        y = if (angle != PI / 2) (x * sin(angle) + b) / cos(angle)
+        else (x * sin(other.angle) + other.b) / cos(other.angle)
         return Point(x, y)
     }
 
@@ -206,12 +206,16 @@ fun lineByPoints(a: Point, b: Point): Line {
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
     val segment = Segment(a, b)
+    val x = segment.end.x - segment.begin.x
+    val y = segment.end.y - segment.begin.y
     val pointC = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
     var angle = 0.0
-    if (a.x == b.x) angle = 0.0
-    if (a.y == b.y) angle = PI / 2
-    if (a.x != b.x && a.y != b.y) angle =
-        atan((((segment.end.y - segment.begin.y) / (segment.end.x - segment.begin.x)) + (PI / 2)) % PI)
+    if (x == 0.0) angle = 0.0
+    else if (y == 0.0) angle = PI / 2
+    else if (x > 0.0 && y >= 0.0) angle = atan(y / x) + PI / 2
+    else if (x < 0.0 && y >= 0.0) angle = (PI / 2 + atan(y / x)) % PI
+    else if (x < 0.0 && y <= 0.0) angle = (PI / 2 + atan(y / x)) % PI
+    else if (x > 0.0 && y <= 0.0) angle = ((2 * PI / 2) + atan(y / x)) % PI
     return Line(pointC, angle)
 }
 
