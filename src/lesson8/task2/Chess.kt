@@ -28,7 +28,7 @@ data class Square(val column: Int, val row: Int) {
      * Для клетки не в пределах доски вернуть пустую строку
      */
     fun notation(): String {
-        if (column < 1 || row < 1) return ""
+        if (column !in 1..8 || row !in 1..8) return ""
         val result = 'a' + column - 1
         return result.toString() + row.toString()
     }
@@ -42,7 +42,7 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square {
-    require(notation.contains(Regex("""[1-8]+|[a-h]+""")))
+    require(notation.contains(Regex("""[a-h]+[1-8]+""")))
     return Square(column = notation.first() - 'a' + 1, row = notation[1].toString().toInt())
 }
 
@@ -253,8 +253,10 @@ fun kingMoveNumber(start: Square, end: Square): Int {
     if (start.row == end.row) return abs(end.column - start.column)
     if (start.column != end.column && start.row != end.row) {
         val column = abs(start.column - end.column)
-        val plusRow = if (start.row > end.row) start.row - column
-        else start.row + column
+        val row = abs(start.row - end.row)
+        val min = minOf(column, row)
+        val plusRow = if (start.row > end.row) start.row - min
+        else start.row + min
         val rlyPlusRow = abs(plusRow - end.row)
         return column + rlyPlusRow
     }
@@ -278,8 +280,8 @@ fun kingMoveNumber(start: Square, end: Square): Int {
 fun kingTrajectory(start: Square, end: Square): List<Square> {
     var count: Int
     val result = mutableListOf(start)
-    var row = 0
-    var column = 0
+    var row: Int
+    var column: Int
     if (start.column == end.column) {
         count = abs(end.row - start.row)
         row = start.row
