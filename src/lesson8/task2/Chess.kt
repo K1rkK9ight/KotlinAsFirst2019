@@ -42,7 +42,7 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square {
-    require(notation.contains(Regex("""[a-h]+[1-8]+""")))
+    require(notation.contains(Regex("""[a-h][1-8]+""")))
     return Square(column = notation.first() - 'a' + 1, row = notation[1].toString().toInt())
 }
 
@@ -176,52 +176,99 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
         else start.row - changeOfDiagonal
         column = start.column + changeOfDiagonal
         result.add(Square(column, row))
+        result.add(end)
+        return result
     }
     if (start.column == end.column) {
         row = start.row + changeOfDiagonal
         column = if (start.column + changeOfDiagonal <= 8) start.column + changeOfDiagonal
         else start.column - changeOfDiagonal
         result.add(Square(column, row))
+        result.add(end)
+        return result
     }
     if (start.column < end.column && start.row > end.row) {
         if (end.row + changeOfDiagonal <= 8) {
-            row = start.row + changeOfDiagonal
-            column = start.column + changeOfDiagonal
+            if (abs(start.column - end.column) > abs(start.row - end.row)) {
+                row = start.row + changeOfDiagonal
+                column = start.column + changeOfDiagonal
+            } else {
+                row = start.row - changeOfDiagonal
+                column = start.column - changeOfDiagonal
+            }
         } else {
-            row = end.row - changeOfDiagonal
-            column = end.column - changeOfDiagonal
+            if (abs(start.column - end.column) > abs(start.row - end.row)) {
+                row = end.row - changeOfDiagonal
+                column = end.column - changeOfDiagonal
+            } else {
+                row = start.row - changeOfDiagonal
+                column = start.column + changeOfDiagonal
+            }
         }
         result.add(Square(column, row))
+        result.add(end)
+        return result
     }
     if (start.column < end.column && start.row < end.row) {
         if (end.row + changeOfDiagonal <= 8) {
-            row = end.row - changeOfDiagonal
-            column = end.column + changeOfDiagonal
+            if (abs(start.column - end.column) > abs(start.row - end.row)) {
+                row = end.row + changeOfDiagonal
+                column = end.column - changeOfDiagonal
+            } else {
+                row = end.row - changeOfDiagonal
+                column = end.column + changeOfDiagonal
+            }
         } else {
-            row = start.row + changeOfDiagonal
-            column = start.column - changeOfDiagonal
+            if (abs(start.column - end.column) > abs(start.row - end.row)) {
+                row = end.row - changeOfDiagonal
+                column = end.column + changeOfDiagonal
+            } else {
+                row = start.row - changeOfDiagonal
+                column = start.column + changeOfDiagonal
+            }
         }
         result.add(Square(column, row))
+        result.add(end)
+        return result
     }
     if (start.column > end.column && start.row > end.row) {
-        if (start.row + changeOfDiagonal <= 8) {
+        if (abs(start.column - end.column) > abs(start.row - end.row)) {
             row = start.row + changeOfDiagonal
             column = start.column - changeOfDiagonal
         } else {
-            row = end.row - changeOfDiagonal
-            column = end.column + changeOfDiagonal
+            row = end.row + changeOfDiagonal
+            column = end.column - changeOfDiagonal
+        }
+    } else {
+        if (abs(start.column - end.column) > abs(start.row - end.row)) {
+            row = end.row + changeOfDiagonal
+            column = end.column - changeOfDiagonal
+        } else {
+            row = start.row - changeOfDiagonal
+            column = start.column + changeOfDiagonal
         }
         result.add(Square(column, row))
+        result.add(end)
+        return result
     }
     if (start.column > end.column && start.row < end.row) {
         if (end.row + changeOfDiagonal <= 8) {
-            row = end.row + changeOfDiagonal
-            column = end.column + changeOfDiagonal
+            if (abs(start.column - end.column) > abs(start.row - end.row)) {
+                row = start.row + changeOfDiagonal
+                column = start.column + changeOfDiagonal
+            } else {
+                row = start.row - changeOfDiagonal
+                column = start.column - changeOfDiagonal
+            }
         } else {
-            row = start.row - changeOfDiagonal
-            column = start.column - changeOfDiagonal
+            if (abs(start.column - end.column) > abs(start.row - end.row)) {
+                row = end.row - changeOfDiagonal
+                column = end.column - changeOfDiagonal
+            } else {
+                row = start.row - changeOfDiagonal
+                column = start.column + changeOfDiagonal
+            }
         }
-        result.add(Square(column, row))
     }
     result.add(end)
     return result
@@ -315,6 +362,10 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
             else column++
             result.add(Square(column, row))
             count -= 1
+            if (row == end.row && abs(end.column - column) == 1) {
+                result.add(end)
+                return result
+            }
         }
         if (row != end.row) {
             var row1 = abs(row - end.row)
