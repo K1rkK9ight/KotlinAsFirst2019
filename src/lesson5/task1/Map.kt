@@ -2,6 +2,7 @@
 
 package lesson5.task1
 
+import kotlin.math.PI
 
 
 /**
@@ -320,10 +321,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (k in list.indices) {
-        if ((number - list[k]) in list) {
-            val second = number - list[k]
-            if (list.indexOf(second) != k) return Pair(k, list.indexOf(second))
+    val pairNumberIndex = mutableMapOf<Int, Int>()
+    for (i in list.indices) {
+        val findIndex = number - list[i]
+        if (findIndex !in pairNumberIndex) pairNumberIndex[list[i]] = i
+        if (findIndex in pairNumberIndex && pairNumberIndex[findIndex] != i) {
+            return if (findIndex > i) Pair(i, pairNumberIndex[findIndex]!!)
+            else Pair(pairNumberIndex[findIndex]!!, i)
         }
     }
     return Pair(-1, -1)
