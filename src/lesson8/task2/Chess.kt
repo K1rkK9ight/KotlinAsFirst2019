@@ -42,7 +42,7 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square {
-    require(notation.contains(Regex("""[a-h][1-8]+""")))
+    require(notation.contains(Regex("""[a-h]+[1-8]+""")))
     return Square(column = notation.first() - 'a' + 1, row = notation[1].toString().toInt())
 }
 
@@ -158,121 +158,7 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun bishopTrajectory(start: Square, end: Square): List<Square> {
-    val result = mutableListOf(start)
-    if ((start.row + start.column) % 2 != (end.row + end.column) % 2) return listOf()
-    if (start.row == end.row && start.column == end.column) {
-        return result
-    }
-    if (abs(start.row - end.row) == abs(start.column - end.column)) {
-        result.add(end)
-        return result
-    }
-    val changeOfDiagonal = abs(abs(start.row - end.row) - abs(start.column - end.column)) / 2
-    var column: Int
-    var row: Int
-    if (start.row == end.row) {
-        row = if (start.row + changeOfDiagonal <= 8) start.row + changeOfDiagonal
-        else start.row - changeOfDiagonal
-        column = start.column + changeOfDiagonal
-        result.add(Square(column, row))
-        result.add(end)
-        return result
-    }
-    if (start.column == end.column) {
-        row = start.row + changeOfDiagonal
-        column = if (start.column + changeOfDiagonal <= 8) start.column + changeOfDiagonal
-        else start.column - changeOfDiagonal
-        result.add(Square(column, row))
-        result.add(end)
-        return result
-    }
-    if (start.column < end.column && start.row > end.row) {
-        if (end.row + changeOfDiagonal <= 8) {
-            if (abs(start.column - end.column) > abs(start.row - end.row)) {
-                row = start.row + changeOfDiagonal
-                column = start.column + changeOfDiagonal
-            } else {
-                row = start.row - changeOfDiagonal
-                column = start.column - changeOfDiagonal
-            }
-        } else {
-            if (abs(start.column - end.column) > abs(start.row - end.row)) {
-                row = end.row - changeOfDiagonal
-                column = end.column - changeOfDiagonal
-            } else {
-                row = start.row - changeOfDiagonal
-                column = start.column + changeOfDiagonal
-            }
-        }
-        result.add(Square(column, row))
-        result.add(end)
-        return result
-    }
-    if (start.column < end.column && start.row < end.row) {
-        if (end.row + changeOfDiagonal <= 8) {
-            if (abs(start.column - end.column) > abs(start.row - end.row)) {
-                row = end.row + changeOfDiagonal
-                column = end.column - changeOfDiagonal
-            } else {
-                row = end.row - changeOfDiagonal
-                column = end.column + changeOfDiagonal
-            }
-        } else {
-            if (abs(start.column - end.column) > abs(start.row - end.row)) {
-                row = end.row - changeOfDiagonal
-                column = end.column + changeOfDiagonal
-            } else {
-                row = start.row - changeOfDiagonal
-                column = start.column + changeOfDiagonal
-            }
-        }
-        result.add(Square(column, row))
-        result.add(end)
-        return result
-    }
-    if (start.column > end.column && start.row > end.row) {
-        if (abs(start.column - end.column) > abs(start.row - end.row)) {
-            row = start.row + changeOfDiagonal
-            column = start.column - changeOfDiagonal
-        } else {
-            row = end.row + changeOfDiagonal
-            column = end.column - changeOfDiagonal
-        }
-    } else {
-        if (abs(start.column - end.column) > abs(start.row - end.row)) {
-            row = end.row + changeOfDiagonal
-            column = end.column - changeOfDiagonal
-        } else {
-            row = start.row - changeOfDiagonal
-            column = start.column + changeOfDiagonal
-        }
-        result.add(Square(column, row))
-        result.add(end)
-        return result
-    }
-    if (start.column > end.column && start.row < end.row) {
-        if (end.row + changeOfDiagonal <= 8) {
-            if (abs(start.column - end.column) > abs(start.row - end.row)) {
-                row = start.row + changeOfDiagonal
-                column = start.column + changeOfDiagonal
-            } else {
-                row = start.row - changeOfDiagonal
-                column = start.column - changeOfDiagonal
-            }
-        } else {
-            if (abs(start.column - end.column) > abs(start.row - end.row)) {
-                row = end.row - changeOfDiagonal
-                column = end.column - changeOfDiagonal
-            } else {
-                row = start.row - changeOfDiagonal
-                column = start.column + changeOfDiagonal
-            }
-        }
-    }
-    result.add(end)
-    return result
-}
+fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
 
 /**
  * Средняя
@@ -363,6 +249,40 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
             result.add(Square(column, row))
             count -= 1
             if (row == end.row && abs(end.column - column) == 1) {
+                result.add(end)
+                return result
+            }
+            if (row == end.row) {
+                if (end.column < start.column) {
+                    while (column != end.column + 1) {
+                        column -= 1
+                        result.add(Square(column, row))
+                    }
+                } else if (end.column > start.column) {
+                    while (column != end.column - 1) {
+                        column++
+                        result.add(Square(column, row))
+                    }
+                }
+                result.add(end)
+                return result
+            }
+            if (column == end.column && abs(end.row - row) == 1) {
+                result.add(end)
+                return result
+            }
+            if (column == end.column) {
+                if (end.row < start.row) {
+                    while (row != end.row + 1) {
+                        row -= 1
+                        result.add(Square(column, row))
+                    }
+                } else if (end.row > start.row) {
+                    while (row != end.row - 1) {
+                        row++
+                        result.add(Square(column, row))
+                    }
+                }
                 result.add(end)
                 return result
             }
