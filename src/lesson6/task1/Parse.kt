@@ -165,7 +165,7 @@ fun bestLongJump(jumps: String): Int {
     val symbolNot = setOf("-", "%")
     var result = -1
     val split = jumps.split(" ")
-    if (!jumps.matches(Regex("""(\d+|-|%|\s)*"""))) return -1
+    if (!jumps.matches(Regex("""((\d+|[-%])\s)*(\d+|[-%])"""))) return -1
     for (element in split) {
         if (element !in symbolNot && element.toInt() > result) result = element.toInt()
     }
