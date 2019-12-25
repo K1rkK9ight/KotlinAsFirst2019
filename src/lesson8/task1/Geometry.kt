@@ -141,6 +141,7 @@ fun circleByDiameter(diameter: Segment): Circle {
  * или: y * cos(angle) = x * sin(angle) + b, где b = point.y * cos(angle) - point.x * sin(angle).
  * Угол наклона обязан находиться в диапазоне от 0 (включительно) до PI (исключительно).
  */
+const val eps = 1E-10
 class Line private constructor(val b: Double, val angle: Double) {
     init {
         require(angle >= 0 && angle < PI) { "Incorrect line angle: $angle" }
@@ -157,7 +158,7 @@ class Line private constructor(val b: Double, val angle: Double) {
     fun crossPoint(other: Line): Point {
         val x = (other.b * cos(angle) - b * cos(other.angle)) / sin(angle - other.angle)
         val y: Double
-        y = if (angle != PI / 2) (x * sin(angle) + b) / cos(angle)
+        y = if (abs(angle - (PI / 2)) >= eps) (x * sin(angle) + b) / cos(angle)
         else (x * sin(other.angle) + other.b) / cos(other.angle)
         return Point(x, y)
     }
@@ -172,7 +173,6 @@ class Line private constructor(val b: Double, val angle: Double) {
 
     override fun toString() = "Line(${cos(angle)} * y = ${sin(angle)} * x + $b)"
 }
-
 /**
  * Средняя
  *
@@ -181,12 +181,11 @@ class Line private constructor(val b: Double, val angle: Double) {
 fun lineBySegment(s: Segment): Line {
     val y = s.end.y - s.begin.y
     val x = s.end.x - s.begin.x
-    var angle = 0.0
+    var angle = PI / 2
     if (x > 0.0 && y >= 0.0) angle = atan(y / x)
     if (x < 0.0 && y >= 0.0) angle = (PI + atan(y / x)) % PI
     if (x < 0.0 && y <= 0.0) angle = (PI + atan(y / x)) % PI
     if (x > 0.0 && y <= 0.0) angle = (2 * PI + atan(y / x)) % PI
-    if (x == 0.0) angle = PI / 2
     return Line(s.begin, angle)
 }
 /**
@@ -210,7 +209,7 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     val y = segment.end.y - segment.begin.y
     val pointC = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
     val angle = atan(y / x)
-    if (angle == PI / 2) return Line(pointC, 0.0)
+    if (abs(angle - (PI / 2)) < eps) return Line(pointC, 0.0)
     else if (angle < 0) return Line(pointC, (angle + (3 * PI) / 2) % PI)
     return Line(pointC, (angle + PI / 2) % PI)
 }

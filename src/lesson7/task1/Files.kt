@@ -3,8 +3,6 @@
 package lesson7.task1
 
 import java.io.File
-import java.io.Writer
-import java.util.function.ToDoubleBiFunction
 
 /**
  * Пример
@@ -63,7 +61,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val reader = File(inputName).readLines()
     var count = 0
     for (line in reader) {
-        for (word in line.split(" ")) {
+        for (word in line.split(Regex("""\s"""))) {
             for ((keys) in result) {
                 val partOfWord = word.toLowerCase().windowed(keys.length, step = 1)
                 for (part in partOfWord) {
@@ -229,7 +227,6 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  */
 fun top20Words(inputName: String): Map<String, Int> {
     val wordArray = mutableMapOf<String, Int>()
-    val result = mutableMapOf<String, Int>()
     val reader = File(inputName).readLines()
     for (line in reader) {
         val line1 = line.toLowerCase().split(Regex("""[^а-ёa-z]+"""))
@@ -238,11 +235,7 @@ fun top20Words(inputName: String): Map<String, Int> {
         }
     }
     if (wordArray.size <= 20) return wordArray
-    val wordArray1 = wordArray.toList().sortedBy { it.second }.reversed().take(20).toMap()
-    for ((keys, values) in wordArray1) {
-        result[keys] = values
-    }
-    return result
+    return wordArray.toList().sortedBy { it.second }.reversed().take(20).toMap()
 }
 
 /**

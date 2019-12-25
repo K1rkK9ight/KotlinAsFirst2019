@@ -6,6 +6,7 @@ import lesson8.task1.Point
 import lesson8.task1.lineByPoints
 import javax.swing.text.Segment
 import kotlin.math.abs
+import kotlin.math.sign
 
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.
@@ -71,9 +72,11 @@ fun square(notation: String): Square {
  */
 fun rookMoveNumber(start: Square, end: Square): Int {
     require(!(start.column !in 1..8 || start.row !in 1..8 || end.column !in 1..8 || end.row !in 1..8))
-    return if (start.column == end.column && start.row == end.row) 0
-    else if (start.column == end.column || start.row == end.row) 1
-    else 2
+    return when {
+        (start.column == end.column && start.row == end.row) -> 0
+        (start.column == end.column || start.row == end.row) -> 1
+        else -> 2
+    }
 }
 
 /**
@@ -134,10 +137,12 @@ fun rookTrajectory(start: Square, end: Square): List<Square> {
  */
 fun bishopMoveNumber(start: Square, end: Square): Int {
     require(!(start.column !in 1..8 || start.row !in 1..8 || end.column !in 1..8 || end.row !in 1..8))
-    if (start.column == end.column && start.row == end.row) return 0
-    if (abs(start.column - end.column) == abs(start.row - end.row)) return 1
-    if ((start.column + start.row) % 2 == (end.column + end.row) % 2) return 2
-    return -1
+    return when {
+        (start.column == end.column && start.row == end.row) -> 0
+        (abs(start.column - end.column) == abs(start.row - end.row)) -> 1
+        ((start.column + start.row) % 2 == (end.column + end.row) % 2)-> 2
+        else -> -1
+    }
 }
 
 /**
@@ -215,6 +220,8 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
     val result = mutableListOf(start)
     var row: Int
     var column: Int
+    var addSquare = start
+    if (start == end) return result
     if (start.column == end.column) {
         count = abs(end.row - start.row)
         row = start.row
@@ -225,6 +232,8 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
             result.add(Square(column, row))
             count -= 1
         }
+        result.add(end)
+        return result
     }
     if (start.row == end.row) {
         count = abs(end.column - start.column)
@@ -236,70 +245,26 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
             result.add(Square(column, row))
             count -= 1
         }
+        result.add(end)
+        return result
     }
     if (start.column != end.column && start.row != end.row) {
-        count = abs(start.column - end.column)
-        column = start.column
-        row = start.row
-        while (count > 0) {
-            if (start.row > end.row) row -= 1
-            else row++
-            if (start.column > end.column) column -= 1
-            else column++
-            result.add(Square(column, row))
-            count -= 1
-            if (row == end.row && abs(end.column - column) == 1) {
-                result.add(end)
-                return result
+        while (addSquare != end) {
+            val findColumn = when {
+                addSquare.column < end.column -> 1
+                addSquare.column == end.column -> 0
+                else -> -1
             }
-            if (row == end.row) {
-                if (end.column < start.column) {
-                    while (column != end.column + 1) {
-                        column -= 1
-                        result.add(Square(column, row))
-                    }
-                } else if (end.column > start.column) {
-                    while (column != end.column - 1) {
-                        column++
-                        result.add(Square(column, row))
-                    }
-                }
-                result.add(end)
-                return result
+            val findRow = when {
+                addSquare.row < end.row -> 1
+                addSquare.row == end.row -> 0
+                else -> -1
             }
-            if (column == end.column && abs(end.row - row) == 1) {
-                result.add(end)
-                return result
-            }
-            if (column == end.column) {
-                if (end.row < start.row) {
-                    while (row != end.row + 1) {
-                        row -= 1
-                        result.add(Square(column, row))
-                    }
-                } else if (end.row > start.row) {
-                    while (row != end.row - 1) {
-                        row++
-                        result.add(Square(column, row))
-                    }
-                }
-                result.add(end)
-                return result
-            }
-        }
-        if (row != end.row) {
-            var row1 = abs(row - end.row)
-            var row2 = row
-            while (row1 > 0) {
-                if (row > end.row) row2 -= 1
-                else row2++
-                result.add(Square(column, row2))
-                row1 -= 1
-            }
+            addSquare = Square(addSquare.column + findColumn, addSquare.row + findRow)
+            result.add(addSquare)
         }
         return result
     }
-    if (start.column != end.column && start.row != end.row) result.add(end)
     return result
 }
 

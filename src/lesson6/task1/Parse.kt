@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import lesson5.task1.buildGrades
 import lesson5.task1.removeFillerWords
 import java.lang.IndexOutOfBoundsException
 
@@ -81,12 +82,16 @@ val months = mapOf(
 fun dateStrToDigit(str: String): String {
     val split = str.split(" ")
     if (str.isEmpty() || split.size != 3) return ""
-    val day = split[0].toInt()
-    val year = split[2].toInt()
-    if (split[1] in months && day in 1..31 && split.size == 3) {
-        val month = months[split[1]]
-        if (day > daysInMonth(month!!, year) || day < 0 || month !in 1..12) return ""
-        return String.format("%02d.%02d.%d", day, month, year)
+    try {
+        val day = split[0].toInt()
+        val year = split[2].toInt()
+        if (split[1] in months && day in 1..31 && split.size == 3) {
+            val month = months[split[1]]
+            if (day > daysInMonth(month!!, year) || day < 0 || month !in 1..12) return ""
+            return String.format("%02d.%02d.%d", day, month, year)
+        }
+    } catch (e: NumberFormatException) {
+        return ""
     }
     return ""
 }
@@ -101,6 +106,8 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
+val reMonths = buildGrades(months)
+
 fun dateDigitToStr(digital: String): String {
     val split = digital.split(".")
     if (digital.isEmpty() || split.size != 3 || split[0].contains(Regex("""\D"""))
@@ -109,20 +116,12 @@ fun dateDigitToStr(digital: String): String {
     val day = split[0].toInt()
     val month = split[1].toInt()
     val year = split[2].toInt()
-    var count = ""
-    for ((keys, values) in months) {
-        if (values > month) break
-        else {
-            count = keys
-            continue
-        }
-    }
+    val count = reMonths.getValue(month).joinToString()
     if (day > daysInMonth(month, year) || day < 0 || month !in 1..12 || split.size != 3) return ""
     if (day in 1..31 && month in 1..12 && split.size == 3) {
         return String.format("%2d %s %d", day, count, year).trim()
     }
     return ""
-
 }
 
 
@@ -141,13 +140,11 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    val symbol = setOf('-', '+', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '(', ')', ' ')
     val result = mutableListOf<Char>()
     val symbolNot = setOf('-', '(', ')', ' ')
     if (!phone.matches(Regex("""(\+?\d+)?[\d\s\-]*(\([\d\s\-]+\))?[\d\s\-]*"""))) return ""
     for (char in phone) {
-        if (char !in symbol) return ""
-        else if (char !in symbolNot) result.add(char)
+        if (char !in symbolNot) result.add(char)
     }
     return result.joinToString("")
 }
@@ -208,17 +205,8 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val split = expression.split(" ")
-    val symbol = setOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
     var result = 0
-    val plusMinus = setOf("+", "-")
-    for (element in split) {
-        require(
-            !(element.contains(Regex("""[-+]+\d|[a-zа-я]""")) || !element.contains(Regex("""\d+|[+-]+|\s"""))
-                    || element in plusMinus && element + 1 in plusMinus || split.size == 1 && element in plusMinus
-                    || element in symbol && element + 1 in symbol || expression.isEmpty())
-        )
-    }
-
+    require(expression.matches(Regex("""(\d+\s[+-]\s)*\d+""")))
     result += split[0].toInt()
     for (i in 2 until split.size) {
         if (i % 2 == 0 && split[i - 1] == "+") result += split[i].toInt()

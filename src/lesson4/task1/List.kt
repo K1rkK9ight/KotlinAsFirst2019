@@ -369,7 +369,9 @@ fun russian(n: Int): String {
     if ((list1[0] > 0 && list1[1] == 0 && list1[2] == 0) || (list1[1] > 1 && list1[2] == 0) || (list1[1] == 1)
     ) result.add(oneToNineThousand[0])
     if (list1[3] > 0) result.add(oneToNineHundred[list1[3]])
-    if (list1[4] == 1) result.add(tenToNineteen[list1[5]])
-    else result.add(twoToNineDecade[list1[4]]) && result.add(oneToNine[list1[5]])
+    if (list1[4] != 1) {
+        result.add(twoToNineDecade[list1[4]])
+        result.add(oneToNine[list1[5]])
+    } else result.add(tenToNineteen[list1[5]])
     return result.filter { it.isNotEmpty() }.joinToString(" ").trim()
 }
