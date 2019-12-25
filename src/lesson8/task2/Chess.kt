@@ -43,7 +43,7 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square {
-    require(notation.contains(Regex("""[a-h]+[1-8]+""")))
+    require(notation.matches(Regex("""[a-h][1-9]""")))
     return Square(column = notation.first() - 'a' + 1, row = notation[1].toString().toInt())
 }
 
@@ -140,7 +140,7 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
     return when {
         (start.column == end.column && start.row == end.row) -> 0
         (abs(start.column - end.column) == abs(start.row - end.row)) -> 1
-        ((start.column + start.row) % 2 == (end.column + end.row) % 2)-> 2
+        ((start.column + start.row) % 2 == (end.column + end.row) % 2) -> 2
         else -> -1
     }
 }
@@ -216,54 +216,22 @@ fun kingMoveNumber(start: Square, end: Square): Int {
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 fun kingTrajectory(start: Square, end: Square): List<Square> {
-    var count: Int
     val result = mutableListOf(start)
-    var row: Int
-    var column: Int
     var addSquare = start
     if (start == end) return result
-    if (start.column == end.column) {
-        count = abs(end.row - start.row)
-        row = start.row
-        while (count > 0) {
-            if (start.row > end.row) row -= 1
-            else row++
-            column = start.column
-            result.add(Square(column, row))
-            count -= 1
+    while (addSquare != end) {
+        val findColumn = when {
+            addSquare.column < end.column -> 1
+            addSquare.column == end.column -> 0
+            else -> -1
         }
-        result.add(end)
-        return result
-    }
-    if (start.row == end.row) {
-        count = abs(end.column - start.column)
-        column = start.column
-        while (count > 0) {
-            row = start.row
-            if (start.column > end.column) column -= 1
-            else column++
-            result.add(Square(column, row))
-            count -= 1
+        val findRow = when {
+            addSquare.row < end.row -> 1
+            addSquare.row == end.row -> 0
+            else -> -1
         }
-        result.add(end)
-        return result
-    }
-    if (start.column != end.column && start.row != end.row) {
-        while (addSquare != end) {
-            val findColumn = when {
-                addSquare.column < end.column -> 1
-                addSquare.column == end.column -> 0
-                else -> -1
-            }
-            val findRow = when {
-                addSquare.row < end.row -> 1
-                addSquare.row == end.row -> 0
-                else -> -1
-            }
-            addSquare = Square(addSquare.column + findColumn, addSquare.row + findRow)
-            result.add(addSquare)
-        }
-        return result
+        addSquare = Square(addSquare.column + findColumn, addSquare.row + findRow)
+        result.add(addSquare)
     }
     return result
 }

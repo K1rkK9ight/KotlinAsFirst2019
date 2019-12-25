@@ -116,8 +116,8 @@ fun dateDigitToStr(digital: String): String {
     val day = split[0].toInt()
     val month = split[1].toInt()
     val year = split[2].toInt()
-    val count = reMonths.getValue(month).joinToString()
     if (day > daysInMonth(month, year) || day < 0 || month !in 1..12 || split.size != 3) return ""
+    val count = reMonths.getValue(month).joinToString()
     if (day in 1..31 && month in 1..12 && split.size == 3) {
         return String.format("%2d %s %d", day, count, year).trim()
     }
@@ -142,7 +142,8 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
     val result = mutableListOf<Char>()
     val symbolNot = setOf('-', '(', ')', ' ')
-    if (!phone.matches(Regex("""(\+?\d+)?[\d\s\-]*(\([\d\s\-]+\))?[\d\s\-]*"""))) return ""
+    if (!phone.matches(Regex("""(\+?\d+)?[\d\s\-]*(\([\d\s\-]+\))?[\d\s\-]*"""))
+        || phone.matches(Regex("""\s"""))) return ""
     for (char in phone) {
         if (char !in symbolNot) result.add(char)
     }
