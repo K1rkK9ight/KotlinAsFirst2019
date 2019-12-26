@@ -4,6 +4,7 @@ package lesson8.task2
 
 import lesson8.task1.Point
 import lesson8.task1.lineByPoints
+import lesson8.task3.Graph
 import javax.swing.text.Segment
 import kotlin.math.abs
 import kotlin.math.sign
@@ -259,7 +260,27 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+fun knightMoveNumber(start: Square, end: Square): Int {
+    val graph = Graph()
+    for (i in 1..8) {
+        for (k in 1..8) {
+            graph.addVertex(Square(i, k).toString())
+        }
+    }
+    for (m in 1..8) {
+        for (n in 1..8) {
+            if (m + 1 < 9 && n + 2 < 9) graph.connect(Square(m, n).toString(), Square(m + 1, n + 2).toString())
+            if (m - 1 > 0 && n - 2 > 0) graph.connect(Square(m, n).toString(), Square(m - 1, n - 2).toString())
+            if (m + 2 < 9 && n + 1 < 9) graph.connect(Square(m, n).toString(), Square(m + 2, n + 1).toString())
+            if (m - 2 > 0 && n - 1 > 0) graph.connect(Square(m, n).toString(), Square(m - 2, n - 1).toString())
+            if (m + 1 < 9 && n - 2 > 0) graph.connect(Square(m, n).toString(), Square(m + 1, n - 2).toString())
+            if (m - 1 > 0 && n + 2 < 9) graph.connect(Square(m, n).toString(), Square(m - 1, n + 2).toString())
+            if (m + 2 < 9 && n - 1 > 0) graph.connect(Square(m, n).toString(), Square(m + 2, n - 1).toString())
+            if (m - 2 > 0 && n + 1 < 9) graph.connect(Square(m, n).toString(), Square(m - 2, n + 1).toString())
+        }
+    }
+    return graph.bfs(start.toString(), end.toString())
+}
 
 /**
  * Очень сложная
