@@ -2,12 +2,8 @@
 
 package lesson8.task2
 
-import lesson8.task1.Point
-import lesson8.task1.lineByPoints
 import lesson8.task3.Graph
-import javax.swing.text.Segment
 import kotlin.math.abs
-import kotlin.math.sign
 
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.

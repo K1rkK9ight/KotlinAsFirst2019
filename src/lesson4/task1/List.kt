@@ -4,11 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import lesson5.task1.removeFillerWords
-import lesson8.task1.findNearestCirclePair
-import kotlin.math.pow
 import kotlin.math.sqrt
-import java.io.File.separator as separator
 
 /**
  * Пример

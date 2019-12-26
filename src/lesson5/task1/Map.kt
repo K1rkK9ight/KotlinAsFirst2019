@@ -2,7 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.math.PI
 
 
 /**
