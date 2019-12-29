@@ -258,24 +258,26 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  */
 fun knightMoveNumber(start: Square, end: Square): Int {
     val graph = Graph()
+    require(!(start.row !in 1..8 || start.column !in 1..8 || end.row !in 1..8 || end.column !in 1..8))
+    if (start == end) return 0
     for (i in 1..8) {
         for (k in 1..8) {
-            graph.addVertex(Square(i, k).toString())
+            graph.addVertex(Square(i, k).notation())
         }
     }
     for (m in 1..8) {
         for (n in 1..8) {
-            if (m + 1 < 9 && n + 2 < 9) graph.connect(Square(m, n).toString(), Square(m + 1, n + 2).toString())
-            if (m - 1 > 0 && n - 2 > 0) graph.connect(Square(m, n).toString(), Square(m - 1, n - 2).toString())
-            if (m + 2 < 9 && n + 1 < 9) graph.connect(Square(m, n).toString(), Square(m + 2, n + 1).toString())
-            if (m - 2 > 0 && n - 1 > 0) graph.connect(Square(m, n).toString(), Square(m - 2, n - 1).toString())
-            if (m + 1 < 9 && n - 2 > 0) graph.connect(Square(m, n).toString(), Square(m + 1, n - 2).toString())
-            if (m - 1 > 0 && n + 2 < 9) graph.connect(Square(m, n).toString(), Square(m - 1, n + 2).toString())
-            if (m + 2 < 9 && n - 1 > 0) graph.connect(Square(m, n).toString(), Square(m + 2, n - 1).toString())
-            if (m - 2 > 0 && n + 1 < 9) graph.connect(Square(m, n).toString(), Square(m - 2, n + 1).toString())
+            if (m + 1 < 9 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m + 1, n + 2).notation())
+            if (m - 1 > 0 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m - 1, n - 2).notation())
+            if (m + 2 < 9 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m + 2, n + 1).notation())
+            if (m - 2 > 0 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m - 2, n - 1).notation())
+            if (m + 1 < 9 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m + 1, n - 2).notation())
+            if (m - 1 > 0 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m - 1, n + 2).notation())
+            if (m + 2 < 9 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m + 2, n - 1).notation())
+            if (m - 2 > 0 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m - 2, n + 1).notation())
         }
     }
-    return graph.bfs(start.toString(), end.toString())
+    return graph.bfs(start.notation(), end.notation())
 }
 
 /**
@@ -298,4 +300,27 @@ fun knightMoveNumber(start: Square, end: Square): Int {
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun knightTrajectory(start: Square, end: Square): List<Square> {
+    //Решение такое же как и выше(создаю граф для коня), только с использованием измененного поиска в ширину
+    // (bfsForKnight, путь: src/lesson8/task3/Graph).
+    val graph = Graph()
+    for (i in 1..8) {
+        for (k in 1..8) {
+            graph.addVertex(Square(i, k).notation())
+        }
+    }
+    for (m in 1..8) {
+        for (n in 1..8) {
+            if (m + 1 < 9 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m + 1, n + 2).notation())
+            if (m - 1 > 0 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m - 1, n - 2).notation())
+            if (m + 2 < 9 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m + 2, n + 1).notation())
+            if (m - 2 > 0 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m - 2, n - 1).notation())
+            if (m + 1 < 9 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m + 1, n - 2).notation())
+            if (m - 1 > 0 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m - 1, n + 2).notation())
+            if (m + 2 < 9 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m + 2, n - 1).notation())
+            if (m - 2 > 0 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m - 2, n + 1).notation())
+        }
+    }
+    return graph.bfsForKnight(start.notation(), end.notation())
+}
+

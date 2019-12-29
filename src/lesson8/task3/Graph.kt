@@ -1,9 +1,10 @@
 package lesson8.task3
 
+import lesson8.task2.square
 import java.util.*
 
 class Graph {
-    private data class Vertex(val name: String) {
+    data class Vertex(val name: String) {
         val neighbors = mutableSetOf<Vertex>()
     }
 
@@ -49,6 +50,24 @@ class Graph {
         return -1
     }
 
+    fun bfsForKnight(start: String, finish: String) = bfsForKnight(this[start], this[finish]).map { square(it.name) }
+
+    private fun bfsForKnight(start: Vertex, finish: Vertex): List<Vertex> {
+        val queue = ArrayDeque<Vertex>()
+        queue.add(start)
+        val visited = mutableMapOf(start to listOf(start))
+        while (queue.isNotEmpty()) {
+            val next = queue.poll()
+            val trajectory = visited[next]!!
+            if (next == finish) return trajectory
+            for (neighbor in next.neighbors) {
+                if (neighbor in visited) continue
+                visited[neighbor] = visited[next]!! + neighbor
+                queue.add(neighbor)
+            }
+        }
+        return emptyList()
+    }
     /**
      * Пример
      *

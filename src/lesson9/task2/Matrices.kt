@@ -1,11 +1,12 @@
-@file:Suppress("UNUSED_PARAMETER")
+    @file:Suppress("UNUSED_PARAMETER")
 
 package lesson9.task2
 
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
 
-// Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
+
+    // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
 /**
  * Пример
@@ -104,7 +105,16 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+    require(matrix.width == matrix.height)
+    val result = createMatrix(height = matrix.height, width = matrix.height, e = matrix[0, 0])
+    for (i in 0 until matrix.height) {
+        for (k in 0 until matrix.width) {
+            result[i, k] = matrix[matrix.height - k - 1, k]
+        }
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -119,7 +129,37 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    require(matrix.width == matrix.height)
+    val check1 = mutableSetOf<Int>()
+    val check2 = mutableSetOf<Int>()
+    val result1 = createMatrix(height = matrix.height, width = matrix.width, e = matrix[0, 0])
+    val result2 = createMatrix(height = matrix.height, width = matrix.width, e = matrix[0, 0])
+    var count1 = 0
+    var count2 = 0
+    while (count1 < matrix.height) {
+        while (count2 < matrix.width) {
+            if (matrix[count1, count2] <= matrix.height && matrix[count1, count2] != 0) {
+                if (matrix[count1, count2] !in check1) {
+                    check1.add(matrix[count1, count2])
+                    result1[count1, count2] = matrix[count1, count2]
+                } else return false
+            } else return false
+            if (matrix[count2, count1] <= matrix.height && matrix[count2, count1] != 0) {
+                if (matrix[count2, count1] !in check2) {
+                    check2.add(matrix[count2, count1])
+                    result2[count2, count1] = matrix[count2, count1]
+                } else return false
+            } else return false
+            count2++
+        }
+        count1++
+        count2 = 0
+        check1.clear()
+        check2.clear()
+    }
+    return result1 == matrix && result2 == matrix
+}
 
 /**
  * Средняя
