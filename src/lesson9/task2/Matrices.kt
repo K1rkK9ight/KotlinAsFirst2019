@@ -110,7 +110,7 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
     val result = createMatrix(height = matrix.height, width = matrix.height, e = matrix[0, 0])
     for (i in 0 until matrix.height) {
         for (k in 0 until matrix.width) {
-            result[i, k] = matrix[matrix.height - k - 1, k]
+            result[i, k] = matrix[matrix.height - k - 1, i]
         }
     }
     return result
@@ -139,13 +139,13 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
     var count2 = 0
     while (count1 < matrix.height) {
         while (count2 < matrix.width) {
-            if (matrix[count1, count2] <= matrix.height && matrix[count1, count2] != 0) {
+            if (matrix[count1, count2] <= matrix.height && matrix[count1, count2] > 0) {
                 if (matrix[count1, count2] !in check1) {
                     check1.add(matrix[count1, count2])
                     result1[count1, count2] = matrix[count1, count2]
                 } else return false
             } else return false
-            if (matrix[count2, count1] <= matrix.height && matrix[count2, count1] != 0) {
+            if (matrix[count2, count1] <= matrix.height && matrix[count2, count1] > 0) {
                 if (matrix[count2, count1] !in check2) {
                     check2.add(matrix[count2, count1])
                     result2[count2, count1] = matrix[count2, count1]
