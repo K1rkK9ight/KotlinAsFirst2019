@@ -265,40 +265,15 @@ fun mostExpensive(description: String): String {
  */
 fun fromRoman(roman: String): Int {
     if (roman.isEmpty()) return -1
-    var index = 0
-    var index1 = 0
-    var index2 = 0
-    val count: Char = roman.last()
-    val list = mutableListOf<Char>()
     var minusNumber = 0
-    val romanNumber = setOf(
-        "", "I", "V", "X", "L",
-        "C", "D", "M"
-    )
-    val arab = listOf(0, 1, 5, 10, 50, 100, 500, 1000)
-    for (element in roman) {
-        if (element.toString() !in romanNumber) return -1
-        list.add(element)
-    }
-    for (element in romanNumber) {
-        if (count.toString() == element) break
-        else index2++
-    }
-    var result = arab[index2]
-    for (i in 0..list.size - 2) {
-        for (element in romanNumber) {
-            if (list[i].toString() == element) break
-            else index++
-        }
-        for (element in romanNumber) {
-            if (list[i + 1].toString() == element) break
-            else index1++
-        }
-        if (index1 > index) {
-            minusNumber += arab[index]
-        } else result += arab[index]
-        index = 0
-        index1 = 0
+    val numMap = hashMapOf('I' to 1, 'V' to 5, 'X' to 10, 'L' to 50, 'C' to 100, 'D' to 500, 'M' to 1000)
+    val numbers = roman.map { if (numMap.containsKey(it)) numMap[it] else return -1 }
+    var result = 0
+    result += numbers[numbers.lastIndex]!!
+    for (i in 0..numbers.size - 2) {
+        if (numbers[i + 1]!! > numbers[i]!!) {
+            minusNumber += numbers[i]!!
+        } else result += numbers[i]!!
     }
     return result - minusNumber
 }

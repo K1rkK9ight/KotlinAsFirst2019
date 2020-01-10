@@ -116,7 +116,7 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val reader = File(inputName).readLines()
-    val maxLength = reader.maxBy { it.trim().length }!!.trim().length
+    val maxLength = reader.maxBy { it.trim().length }?.trim()?.length ?: 0
     val space = StringBuilder()
     for (line in reader) {
         if (reader.size == 1) {
@@ -163,7 +163,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val reader = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
     val maxLength =
-        reader.maxBy { it.trim().replace(" ", "").length + it.trim().split(" ").toList().size - 1 }!!.trim().length
+        reader.maxBy { it.trim().replace(" ", "").length + it.trim().split(" ").toList().size - 1 }?.trim()?.length ?: 0
     var count = 0
     for (line in reader) {
         val line1 = line.trim()
