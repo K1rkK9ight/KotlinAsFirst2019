@@ -4,8 +4,6 @@ package lesson6.task1
 
 import lesson2.task2.daysInMonth
 import lesson5.task1.buildGrades
-import lesson5.task1.removeFillerWords
-import java.lang.IndexOutOfBoundsException
 
 /**
  * Пример
@@ -143,7 +141,8 @@ fun flattenPhoneNumber(phone: String): String {
     val result = mutableListOf<Char>()
     val symbolNot = setOf('-', '(', ')', ' ')
     if (!phone.matches(Regex("""(\+?\d+)?[\d\s\-]*(\([\d\s\-]+\))?[\d\s\-]*"""))
-        || phone.matches(Regex("""\s"""))) return ""
+        || phone.matches(Regex("""\s"""))
+    ) return ""
     for (char in phone) {
         if (char !in symbolNot) result.add(char)
     }
@@ -209,9 +208,9 @@ fun plusMinus(expression: String): Int {
     var result = 0
     require(expression.matches(Regex("""(\d+\s[+-]\s)*\d+""")))
     result += split[0].toInt()
-    for (i in 2 until split.size) {
-        if (i % 2 == 0 && split[i - 1] == "+") result += split[i].toInt()
-        if (i % 2 == 0 && split[i - 1] == "-") result -= split[i].toInt()
+    for (i in 2 until split.size step 2) {
+        if (split[i - 1] == "+") result += split[i].toInt()
+        if (split[i - 1] == "-") result -= split[i].toInt()
     }
     return result
 }
@@ -340,4 +339,46 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    require(commands.contains(Regex("""[>+\-<\[\]\s]""")))
+    val listOfCells = MutableList(cells) { 0 }
+    var limitOfCommand = 0
+    var cell = 0
+    var bracket = 0
+    var position = cells / 2
+    for (command in commands) {
+        if (command == '[') bracket++
+        if (command == ']') bracket -= 1
+        require(bracket >= 0)
+    }
+    require(bracket == 0)
+    while (cell < commands.length && limitOfCommand < limit) {
+        limitOfCommand++
+        if (commands[cell] == '>') position++
+        if (commands[cell] == '+') listOfCells[position]++
+        if (commands[cell] == '-') listOfCells[position] -= 1
+        if (commands[cell] == '<') position -= 1
+        if (commands[cell] == '[' && listOfCells[position] == 0) {
+            bracket = 1
+            while (bracket != 0) {
+                cell++
+                if (commands[cell] == '[') bracket++
+                if (commands[cell] == ']') bracket -= 1
+            }
+        }
+        if (commands[cell] == ']') {
+            if (listOfCells[position] != 0) {
+                bracket = -1
+                while (bracket != 0) {
+                    cell -= 1
+                    if (commands[cell] == '[') bracket++
+                    if (commands[cell] == ']') bracket -= 1
+                }
+            }
+        }
+        cell++
+        check(!(position < 0 || position >= cells))
+    }
+    return listOfCells
+}
+

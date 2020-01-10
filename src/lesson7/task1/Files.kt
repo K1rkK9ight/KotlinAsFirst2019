@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.StringBuilder
 
 /**
  * Пример
@@ -115,26 +116,17 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val reader = File(inputName).readLines()
-    var maxLength = 0
-    var space = ""
-    for (line in reader) {
-        if (line.trim().length > maxLength) maxLength = line.trim().length
-    }
+    val maxLength = reader.maxBy { it.trim().length }!!.trim().length
+    val space = StringBuilder()
     for (line in reader) {
         if (reader.size == 1) {
             writer.write(line.trim())
             break
         }
-        if (maxLength % 2 == 0) {
-            while ((space.length * 2 + 1) + line.trim().length < maxLength) {
-                space += " "
-            }
-        } else while ((space.length * 2 + 1) + line.trim().length < maxLength) {
-            space += " "
-        }
-        writer.write(space)
+        while ((space.length * 2 + 1) + line.trim().length < maxLength) space.append(" ")
+        writer.write(space.toString())
         writer.write(line.trim())
-        space = ""
+        space.clear()
         writer.newLine()
     }
     writer.close()
@@ -170,16 +162,13 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     val reader = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
-    var maxLength = 0
+    val maxLength =
+        reader.maxBy { it.trim().replace(" ", "").length + it.trim().split(" ").toList().size - 1 }!!.trim().length
     var count = 0
     for (line in reader) {
-        val line1 = line.trim().replace(" ", "").length
-        val wordInMax = line.trim().split(" ").toList().size
-        if (line1 + wordInMax - 1 > maxLength) maxLength = line1 + wordInMax - 1
-    }
-    for (line in reader) {
-        if (line.trim().split(" ").size == 1 || line.trim().length == maxLength || line == "") {
-            writer.write(line.trim())
+        val line1 = line.trim()
+        if (line1.split(" ").size == 1 || line1.length == maxLength || line1 == "") {
+            writer.write(line1)
             writer.newLine()
         } else {
             val lineLength = line.trim().replace(" ", "").length
@@ -187,20 +176,20 @@ fun alignFileByWidth(inputName: String, outputName: String) {
             val wordsInLine = word.size
             val spaceDiv = (maxLength - lineLength) / (wordsInLine - 1)
             var spaceMod = (maxLength - lineLength) % (wordsInLine - 1)
-            val result = mutableListOf<String>()
+            val result = StringBuilder()
             for (i in 0 until wordsInLine) {
-                result.add(word[i])
+                result.append(word[i])
                 while (count < spaceDiv) {
-                    result.add(" ")
+                    result.append(" ")
                     count++
                 }
                 count = 0
                 if (spaceMod > 0) {
-                    result.add(" ")
+                    result.append(" ")
                     spaceMod -= 1
                 }
             }
-            writer.write(result.joinToString("").trim())
+            writer.write(result.toString().trim())
             writer.newLine()
         }
     }
@@ -229,7 +218,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     val wordArray = mutableMapOf<String, Int>()
     val reader = File(inputName).readLines()
     for (line in reader) {
-        val line1 = line.toLowerCase().split(Regex("""[^а-ёa-z]+"""))
+        val line1 = line.toLowerCase().split(Regex("""[^а-яёa-z]+"""))
         for (word in line1) {
             if (word != "") wordArray[word] = wordArray.getOrDefault(word, 0) + 1
         }

@@ -91,22 +91,10 @@ fun rookMoveNumber(start: Square, end: Square): Int {
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 fun rookTrajectory(start: Square, end: Square): List<Square> {
-    val result = mutableListOf<Square>()
-    if (start.row == end.row && start.column == end.column) {
-        result.add(start)
-        return result
-    }
-    if (start.row == end.row || start.column == end.column) {
-        result.add(start)
-        result.add(end)
-        return result
-    }
-    if (start.row != end.row && start.column != end.column) {
-        result.add(start)
-        result.add(Square(start.column, end.row))
-        result.add(end)
-    }
-    return result
+    val result = mutableSetOf(start)
+    result.add(Square(start.column, end.row))
+    result.add(end)
+    return result.toList()
 }
 
 /**
@@ -184,6 +172,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
  */
 fun kingMoveNumber(start: Square, end: Square): Int {
     require(!(start.column !in 1..8 || start.row !in 1..8 || end.column !in 1..8 || end.row !in 1..8))
+    val knightMoves = listOf(-1 to -2, 1 to 2, 1 to -2, -1 to 2, -2 to -1, 2 to 1, -2 to 1, 2 to -1)
     if (start.column == end.column) return abs(end.row - start.row)
     if (start.row == end.row) return abs(end.column - start.column)
     if (start.column != end.column && start.row != end.row) {
@@ -256,10 +245,8 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int {
-    val graph = Graph()
-    require(!(start.row !in 1..8 || start.column !in 1..8 || end.row !in 1..8 || end.column !in 1..8))
-    if (start == end) return 0
+val knightMoves = listOf(-1 to -2, 1 to 2, 1 to -2, -1 to 2, -2 to -1, 2 to 1, 2 to -1, -2 to 1)
+fun createKnightGraph(graph: Graph) {
     for (i in 1..8) {
         for (k in 1..8) {
             graph.addVertex(Square(i, k).notation())
@@ -267,16 +254,19 @@ fun knightMoveNumber(start: Square, end: Square): Int {
     }
     for (m in 1..8) {
         for (n in 1..8) {
-            if (m + 1 < 9 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m + 1, n + 2).notation())
-            if (m - 1 > 0 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m - 1, n - 2).notation())
-            if (m + 2 < 9 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m + 2, n + 1).notation())
-            if (m - 2 > 0 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m - 2, n - 1).notation())
-            if (m + 1 < 9 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m + 1, n - 2).notation())
-            if (m - 1 > 0 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m - 1, n + 2).notation())
-            if (m + 2 < 9 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m + 2, n - 1).notation())
-            if (m - 2 > 0 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m - 2, n + 1).notation())
+            for ((first, second) in knightMoves) {
+                if (m + first in 1..8 && n + second in 1..8) {
+                    graph.connect(Square(m, n).notation(), Square(m + first, n + second).notation())
+                }
+            }
         }
     }
+}
+fun knightMoveNumber(start: Square, end: Square): Int {
+    val graph = Graph()
+    createKnightGraph(graph)
+    require(!(start.row !in 1..8 || start.column !in 1..8 || end.row !in 1..8 || end.column !in 1..8))
+    if (start == end) return 0
     return graph.bfs(start.notation(), end.notation())
 }
 
@@ -304,23 +294,7 @@ fun knightTrajectory(start: Square, end: Square): List<Square> {
     //Решение такое же как и выше(создаю граф для коня), только с использованием измененного поиска в ширину
     // (bfsForKnight, путь: src/lesson8/task3/Graph).
     val graph = Graph()
-    for (i in 1..8) {
-        for (k in 1..8) {
-            graph.addVertex(Square(i, k).notation())
-        }
-    }
-    for (m in 1..8) {
-        for (n in 1..8) {
-            if (m + 1 < 9 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m + 1, n + 2).notation())
-            if (m - 1 > 0 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m - 1, n - 2).notation())
-            if (m + 2 < 9 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m + 2, n + 1).notation())
-            if (m - 2 > 0 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m - 2, n - 1).notation())
-            if (m + 1 < 9 && n - 2 > 0) graph.connect(Square(m, n).notation(), Square(m + 1, n - 2).notation())
-            if (m - 1 > 0 && n + 2 < 9) graph.connect(Square(m, n).notation(), Square(m - 1, n + 2).notation())
-            if (m + 2 < 9 && n - 1 > 0) graph.connect(Square(m, n).notation(), Square(m + 2, n - 1).notation())
-            if (m - 2 > 0 && n + 1 < 9) graph.connect(Square(m, n).notation(), Square(m - 2, n + 1).notation())
-        }
-    }
+    createKnightGraph(graph)
     return graph.bfsForKnight(start.notation(), end.notation())
 }
 
