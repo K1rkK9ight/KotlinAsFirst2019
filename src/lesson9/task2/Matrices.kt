@@ -129,37 +129,7 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean {
-    require(matrix.width == matrix.height)
-    val check1 = mutableSetOf<Int>()
-    val check2 = mutableSetOf<Int>()
-    val result1 = createMatrix(height = matrix.height, width = matrix.width, e = matrix[0, 0])
-    val result2 = createMatrix(height = matrix.height, width = matrix.width, e = matrix[0, 0])
-    var count1 = 0
-    var count2 = 0
-    while (count1 < matrix.height) {
-        while (count2 < matrix.width) {
-            if (matrix[count1, count2] <= matrix.height && matrix[count1, count2] > 0) {
-                if (matrix[count1, count2] !in check1) {
-                    check1.add(matrix[count1, count2])
-                    result1[count1, count2] = matrix[count1, count2]
-                } else return false
-            } else return false
-            if (matrix[count2, count1] <= matrix.height && matrix[count2, count1] > 0) {
-                if (matrix[count2, count1] !in check2) {
-                    check2.add(matrix[count2, count1])
-                    result2[count2, count1] = matrix[count2, count1]
-                } else return false
-            } else return false
-            count2++
-        }
-        count1++
-        count2 = 0
-        check1.clear()
-        check2.clear()
-    }
-    return result1 == matrix && result2 == matrix
-}
+fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
 
 /**
  * Средняя

@@ -2,8 +2,11 @@
 
 package lesson7.task1
 
+import lesson3.task1.digitNumber
 import java.io.File
 import java.lang.StringBuilder
+import kotlin.math.max
+import kotlin.math.pow
 
 /**
  * Пример
@@ -499,7 +502,66 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val numOfDigitLhv = digitNumber(lhv)
+    val numOfDigitRhv = digitNumber(rhv)
+    val sb = StringBuilder()
+    val numOfDigitMpp = digitNumber(lhv * rhv)
+    var space = numOfDigitMpp - numOfDigitLhv + 1
+    while (space > 0) {
+        sb.append(" ")
+        space -= 1
+    }
+    writer.write(sb.append(lhv).toString())
+    sb.clear().append("*")
+    writer.newLine()
+    space = numOfDigitMpp - numOfDigitRhv
+    while (space > 0) {
+        sb.append(" ")
+        space -= 1
+    }
+    writer.write(sb.append(rhv).toString())
+    sb.clear()
+    var lines = numOfDigitMpp + 1
+    while (lines > 0) {
+        sb.append("-")
+        lines -= 1
+    }
+    writer.newLine()
+    writer.write(sb.toString())
+    sb.clear()
+    var result = rhv % 10 * lhv
+    space = numOfDigitMpp - digitNumber(result) + 1
+    while (space > 0) {
+        sb.append(" ")
+        space -= 1
+    }
+    writer.newLine()
+    writer.write(sb.append(result).toString())
+    for (i in 1 until numOfDigitRhv) {
+        result = rhv / 10.0.pow(i).toInt() % 10 * lhv
+        writer.newLine()
+        sb.clear().append("+")
+        space = numOfDigitMpp - digitNumber(result) - i
+        while (space > 0) {
+            sb.append(" ")
+            space -= 1
+        }
+        writer.write(sb.append(result).toString())
+        sb.clear()
+    }
+    lines = numOfDigitMpp + 1
+    sb.clear()
+    writer.newLine()
+    while (lines > 0) {
+        sb.append("-")
+        lines -= 1
+    }
+    writer.write(sb.toString())
+    sb.clear()
+    writer.newLine()
+    writer.write(sb.append(" ").append(lhv * rhv).toString())
+    writer.close()
 }
 
 
@@ -523,7 +585,95 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
-fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+fun digitOfNumber(number: Int, numberSize: Int): List<Int> {
+    val result = mutableListOf<Int>()
+    var number1 = number
+    for (i in 0 until numberSize) {
+        result += number1 % 10
+        number1 /= 10
+    }
+    return result.reversed()
 }
 
+fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
+    val writer = File(outputName).bufferedWriter()
+    val divRes = lhv / rhv
+    val digitsLhv = digitOfNumber(lhv, digitNumber(lhv))
+    val digitsDivRes = digitOfNumber(divRes, digitNumber(divRes))
+    val sb1 = StringBuilder()
+    val sb2 = StringBuilder()
+    val sb3 = StringBuilder()
+    var indexLhv = 0
+    var indexRhv = 1
+    var space = 0
+    var number = 0
+    var count = 0
+    var string = ""
+    var length: Int
+    for (digit in digitsLhv) {
+        count++
+        string += digit
+        number = string.toInt()
+        indexLhv++
+        if (number / rhv > 0) break
+        else number = lhv
+    }
+    var minusNumber = rhv * digitsDivRes.first()
+    var minusNumberSize = digitNumber(minusNumber)
+    var numberSize = digitNumber(number)
+    if (count == digitNumber(minusNumber)) {
+        sb1.append(" ").append(lhv)
+        minusNumberSize++
+    }
+    sb3.append(sb1).append(" | ").append(rhv)
+    sb2.append("-").append(minusNumber)
+    length = sb1.length
+    sb1.clear()
+    while (sb1.length + sb2.length < numberSize) sb1.append(" ")
+    sb1.append(sb2)
+    while (sb1.length < length + 3) sb1.append(" ")
+    sb1.append(divRes)
+    writer.write(sb3.toString())
+    writer.newLine()
+    writer.write(sb1.toString())
+    writer.newLine()
+    while (indexLhv <= digitsLhv.size) {
+        sb1.clear()
+        sb2.clear()
+        while (sb1.length < max(minusNumberSize, numberSize)) sb1.append("-")
+        while (sb2.length < space) sb2.append(" ")
+        length = sb2.length + sb1.length
+        writer.write(sb2.append(sb1).toString())
+        writer.newLine()
+        sb1.clear()
+        sb2.clear()
+        val differenceNumber = number - minusNumber
+        sb1.append(differenceNumber)
+        while (sb2.length + differenceNumber.toString().length < length) sb2.append(" ")
+        sb2.append(sb1)
+        if (digitsLhv.size <= indexLhv) {
+            writer.write(sb2.toString())
+            break
+        }
+        sb2.append(digitsLhv[indexLhv])
+        length = sb2.length
+        writer.write(sb2.toString())
+        sb2.clear()
+        sb1.clear()
+        writer.newLine()
+        number = differenceNumber * 10 + digitsLhv[indexLhv]
+        minusNumber = rhv * digitsDivRes[indexRhv]
+        sb1.append("-").append(minusNumber)
+        while (sb1.length + sb2.length < length) sb2.append(" ")
+        sb2.append(sb1)
+        writer.write(sb2.toString())
+        writer.newLine()
+        space = sb2.length - number.toString().length
+        if (minusNumber.toString().length == digitNumber(number)) space -= 1
+        indexLhv++
+        indexRhv++
+        minusNumberSize = digitNumber(minusNumber) + 1
+        numberSize = digitNumber(number)
+    }
+    writer.close()
+}
