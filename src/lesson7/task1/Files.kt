@@ -596,7 +596,6 @@ fun digitOfNumber(number: Int, numberSize: Int): List<Int> {
 }
 
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    if (lhv < rhv) throw java.io.FileNotFoundException("Нет такого файла или каталога")
     val writer = File(outputName).bufferedWriter()
     val divRes = lhv / rhv
     val digitsLhv = digitOfNumber(lhv, digitNumber(lhv))
