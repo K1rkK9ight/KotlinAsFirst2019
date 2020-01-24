@@ -625,6 +625,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         sb1.append(" ").append(lhv)
         minusNumberSize++
     }
+    else sb1.append(lhv)
     sb3.append(sb1).append(" | ").append(rhv)
     sb2.append("-").append(minusNumber)
     length = sb1.length
