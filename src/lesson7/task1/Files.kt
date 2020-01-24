@@ -624,8 +624,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     if (count == digitNumber(minusNumber)) {
         sb1.append(" ").append(lhv)
         minusNumberSize++
-    }
-    else sb1.append(lhv)
+    } else sb1.append(lhv)
     sb3.append(sb1).append(" | ").append(rhv)
     sb2.append("-").append(minusNumber)
     length = sb1.length
