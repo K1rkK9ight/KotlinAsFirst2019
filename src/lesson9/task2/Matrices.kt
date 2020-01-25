@@ -1,4 +1,4 @@
-    @file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER")
 
 package lesson9.task2
 
@@ -6,7 +6,7 @@ import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
 
 
-    // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
+// Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
 /**
  * Пример
@@ -129,7 +129,34 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun findRow(matrix: Matrix<Int>, digit: Set<Int>): Boolean {
+    var count = 0
+    for (i in 0 until matrix.height) {
+        val row = mutableSetOf<Int>()
+        for (j in 0 until matrix.width) row += matrix[i, j]
+        if (row != digit) count++
+    }
+    if (count > 0) return false
+    return true
+}
+fun findColumn(matrix: Matrix<Int>, digit: Set<Int>): Boolean {
+    var count = 0
+    for (i in 0 until matrix.width) {
+        val column = mutableSetOf<Int>()
+        for (j in 0 until matrix.height) column += matrix[j, i]
+        if (column != digit) count++
+    }
+    if (count > 0) return false
+    return true
+}
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    if (matrix.height != matrix.width) return false
+    val digits = mutableSetOf<Int>()
+    for (i in 1..matrix.width) digits += i
+    val row = findRow(matrix, digits)
+    val column = findColumn(matrix, digits)
+    return row && column
+}
 
 /**
  * Средняя
