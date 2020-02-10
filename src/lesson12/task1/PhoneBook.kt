@@ -78,9 +78,9 @@ class PhoneBook {
      * либо у него не было такого номера телефона.
      */
     fun removePhone(name: String, phone: String): Boolean {
-        var count1 = 0
-        book.map { if (it.key == name) count1++ }
-        return if (count1 == 0 || !book[name]!!.contains(phone)) false
+        var count = 0
+        book.map { if (it.key == name) count++ }
+        return if (count == 0 || !book[name]!!.contains(phone)) false
         else {
             book[name]!!.remove(phone)
             true

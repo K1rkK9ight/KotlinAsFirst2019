@@ -122,11 +122,11 @@ class Polynom(vararg coeffs: Double) {
         if (this == Polynom(0.0) || this.degree() < other.degree()) return Polynom(0.0)
         if (this == other) return Polynom(1.0)
         if (other.degree() == 0) {
-            val list = mutableListOf<Double>()
+            val result = mutableListOf<Double>()
             for (element in this.coeFF) {
-                list += element / other.coeFF.last()
+                result += element / other.coeFF.last()
             }
-            return Polynom(*list.toDoubleArray())
+            return Polynom(*result.toDoubleArray())
         }
         var div = this
         val pol = mutableListOf<Double>()
