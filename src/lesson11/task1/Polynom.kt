@@ -60,9 +60,9 @@ class Polynom(vararg coeffs: Double) {
      */
     operator fun plus(other: Polynom): Polynom {
         val result = mutableListOf<Double>()
-        val difference = abs(this.coeFF.size - other.coeFF.size)
         var maxI = this.coeFF
         var minI = other.coeFF
+        val difference = abs(this.coeFF.size - other.coeFF.size)
         if (this.coeFF.size != max(this.coeFF.size, other.coeFF.size)) {
             maxI = other.coeFF
             minI = this.coeFF
