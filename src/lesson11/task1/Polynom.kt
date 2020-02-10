@@ -135,7 +135,7 @@ class Polynom(vararg coeffs: Double) {
             pol.clear()
             while (pol.size < div.degree() - other.degree() + 1) pol.add(0.0)
             pol[0] = div.coeff(div.degree())
-            div -= other * Polynom(*pol.toDoubleArray())
+            div -= other.times(Polynom(*pol.toDoubleArray()))
             result += Polynom(*pol.toDoubleArray())
         }
         return result
