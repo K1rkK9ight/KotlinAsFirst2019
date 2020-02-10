@@ -12,6 +12,7 @@ internal class PhoneBookTest {
         assertTrue(book.addHuman("Иванов Петр"))
         assertTrue(book.addHuman("Васильев Дмитрий"))
         assertFalse(book.addHuman("Иванов Петр"))
+        assertFalse(book.addHuman("Васильев Дмитрий"))
     }
 
     @Test
@@ -21,6 +22,8 @@ internal class PhoneBookTest {
         assertTrue(book.addHuman("Васильев Дмитрий"))
         assertTrue(book.removeHuman("Иванов Петр"))
         assertFalse(book.removeHuman("Сидорова Мария"))
+        assertFalse(book.removeHuman("Кирилл"))
+        assertFalse(book.removeHuman(""))
     }
 
     @Test
@@ -33,6 +36,11 @@ internal class PhoneBookTest {
         assertFalse(book.addPhone("Иванов Петр", "+79211234567"))
         assertFalse(book.addPhone("Васильев Дмитрий", "+79211234567"))
         assertTrue(book.addPhone("Васильев Дмитрий", "+79217654321"))
+        assertTrue(book.addHuman("Петров Иван"))
+        assertTrue(book.addPhone("Петров Иван", "+78221244560"))
+        assertTrue(book.addPhone("Петров Иван", "+79222124422"))
+        assertFalse(book.addPhone("Петров Иван", "+78221244560"))
+
     }
 
     @Test
@@ -46,6 +54,8 @@ internal class PhoneBookTest {
         assertTrue(book.removePhone("Иванов Петр", "+78121234567"))
         assertFalse(book.removePhone("Иванов Петр", "+78121234567"))
         assertTrue(book.removePhone("Васильев Дмитрий", "+79217654321"))
+        assertFalse(book.removePhone("", "+78121234567"))
+        assertFalse(book.removePhone("Васильев Дмитрий", "+79211554312"))
     }
 
     @Test
@@ -56,6 +66,7 @@ internal class PhoneBookTest {
         assertTrue(book.addPhone("Иванов Петр", "+79211234567"))
         assertTrue(book.addPhone("Иванов Петр", "+78121234567"))
         assertEquals(setOf("+79211234567", "+78121234567"), book.phones("Иванов Петр"))
+        assertEquals(emptySet<String>(), book.phones(""))
     }
 
     @Test
@@ -69,6 +80,7 @@ internal class PhoneBookTest {
         assertEquals("Васильев Дмитрий", book.humanByPhone("+79217654321"))
         assertEquals("Иванов Петр", book.humanByPhone("+78121234567"))
         assertNull(book.humanByPhone("+78127654321"))
+        assertNull(book.humanByPhone("+79212762221"))
     }
 
     @Test
