@@ -2,6 +2,8 @@
 
 package lesson12.task1
 
+import ru.spbstu.kotlin.generate.assume.retry
+
 /**
  * Класс "Телефонная книга".
  *
@@ -18,7 +20,7 @@ package lesson12.task1
  * Класс должен иметь конструктор по умолчанию (без параметров).
  */
 class PhoneBook {
-    private val book = mutableMapOf<String, MutableList<String>>()
+    private val book = mutableMapOf<String, MutableSet<String>>()
     /**
      * Добавить человека.
      * Возвращает true, если человек был успешно добавлен,
@@ -26,11 +28,9 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun addHuman(name: String): Boolean {
-        var count = 0
-        book.map { if (it.key == name) count++ }
-        return if (count > 0) false
+        return if (name in book) false
         else {
-            book[name] = mutableListOf()
+            book[name] = mutableSetOf()
             true
         }
     }
@@ -42,9 +42,7 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun removeHuman(name: String): Boolean {
-        var count = 0
-        book.map { if (it.key == name) count++ }
-        return if (count == 0) false
+        return if (name !in book) false
         else {
             book.remove(name)
             true
@@ -59,11 +57,9 @@ class PhoneBook {
      * либо такой номер телефона зарегистрирован за другим человеком.
      */
     fun addPhone(name: String, phone: String): Boolean {
-        var count1 = 0
-        var count2 = 0
-        book.map { if (it.key == name) count1++ }
-        book.map { if (phone in it.value) count2++ }
-        return if (count1 == 0 || count2 > 0) false
+        var count = 0
+        book.forEach { if (phone in it.value) count++ }
+        return if (name !in book || count > 0) false
         else {
             book[name]!!.add(phone)
             true
@@ -114,7 +110,16 @@ class PhoneBook {
      * и каждому человеку соответствует одинаковый набор телефонов.
      * Порядок людей / порядок телефонов в книге не должен иметь значения.
      */
-    override fun equals(other: Any?): Boolean = other is PhoneBook && this.hashCode() == other.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+        if (other !is PhoneBook) return false
+        if (other.book.size != this.book.size) return false
+        for ((keys, values) in this.book) {
+            if (keys !in other.book || values.sorted() != other.book[keys]!!.sorted()) return false
+        }
+        return true
+    }
 
     override fun hashCode(): Int {
         var result = 1
@@ -126,4 +131,5 @@ class PhoneBook {
         }
         return result
     }
+
 }

@@ -23,8 +23,10 @@ import kotlin.math.pow
  * Нули в середине и в конце пропускаться не должны, например: x^3+2x+1 --> Polynom(1.0, 2.0, 0.0, 1.0)
  * Старшие коэффициенты, равные нулю, игнорировать, например Polynom(0.0, 0.0, 5.0, 3.0) соответствует 5x+3
  */
-class Polynom(vararg coeffs: Double) {
-    val coeFF = coeffs.toList()
+class Polynom private constructor(private var coeFF: List<Double>) {
+
+    constructor(vararg coeffs: Double) : this(coeffs.toList())
+
     /**
      * Геттер: вернуть значение коэффициента при x^i
      */
@@ -50,7 +52,7 @@ class Polynom(vararg coeffs: Double) {
      */
     fun degree(): Int {
         for (i in coeFF.indices) {
-            if (coeFF[i].toInt() != 0 && coeFF.size - i != 0) return coeFF.size - i - 1
+            if (coeFF[i] != 0.0 && coeFF.size - i != 0) return coeFF.size - i - 1
         }
         return 0
     }
@@ -71,13 +73,13 @@ class Polynom(vararg coeffs: Double) {
             if (i < difference) result.add(maxI[i])
             else result.add(maxI[i] + minI[i - difference])
         }
-        return Polynom(*result.toDoubleArray())
+        return Polynom(result)
     }
 
     /**
      * Смена знака (при всех слагаемых)
      */
-    operator fun unaryMinus(): Polynom = Polynom(*coeFF.map { it * (-1) }.toDoubleArray())
+    operator fun unaryMinus(): Polynom = Polynom(coeFF.map { it * (-1) })
 
 
     /**
@@ -103,7 +105,7 @@ class Polynom(vararg coeffs: Double) {
                 multiple += element * maxDegreePol.coeFF[i]
             }
             while (multiple.size < sumOfSize - i - 1) multiple += 0.0
-            result += Polynom(*multiple.toDoubleArray())
+            result += Polynom(multiple)
             multiple.clear()
         }
         return result
@@ -135,8 +137,8 @@ class Polynom(vararg coeffs: Double) {
             pol.clear()
             while (pol.size < div.degree() - other.degree() + 1) pol.add(0.0)
             pol[0] = div.coeff(div.degree())
-            div -= other.times(Polynom(*pol.toDoubleArray()))
-            result += Polynom(*pol.toDoubleArray())
+            div -= other.times(Polynom(pol))
+            result += Polynom(pol)
         }
         return result
     }
@@ -153,7 +155,7 @@ class Polynom(vararg coeffs: Double) {
             pol.clear()
             while (pol.size < rem.degree() - other.degree() + 1) pol.add(0.0)
             pol[0] = rem.coeff(rem.degree())
-            rem -= other.times(Polynom(*pol.toDoubleArray()))
+            rem -= other.times(Polynom(pol))
         }
         return rem
     }
@@ -161,7 +163,22 @@ class Polynom(vararg coeffs: Double) {
     /**
      * Сравнение на равенство
      */
-    override fun equals(other: Any?): Boolean = other is Polynom && this.hashCode() == other.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+        if (other !is Polynom) return false
+        if (this.degree() != other.degree()) return false
+        var count1 = 0
+        var count2 = 0
+        while (this.coeFF[count1] == 0.0) count1++ //Ситуация, когда стоят в начале нулевые коэф.ы, но полиномы эквивалентны
+        while (other.coeFF[count2] == 0.0) count2++
+        while (count1 < max(this.coeFF.size, other.coeFF.size)) {
+            if (this.coeFF[count1] != other.coeFF[count2]) return false
+            count1++
+            count2++
+        }
+        return true
+    }
 
     /**
      * Получение хеш-кода

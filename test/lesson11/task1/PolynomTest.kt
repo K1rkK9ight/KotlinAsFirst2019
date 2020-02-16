@@ -38,6 +38,8 @@ class PolynomTest {
         assertEquals(1, r.degree())
         val m = Polynom(9.0, 0.0, 9.0, 0.0, 9.0, 9.0)
         assertEquals(5, m.degree())
+        val b = Polynom(0.1, 0.0, 9.0, 9.0)
+        assertEquals(3, b.degree())
     }
 
     @Test
@@ -168,6 +170,8 @@ class PolynomTest {
     fun equals() {
         assertEquals(Polynom(1.0, 2.0, 3.0), Polynom(1.0, 2.0, 3.0))
         assertEquals(Polynom(0.0, 2.0, 3.0), Polynom(2.0, 3.0))
+        assertEquals(Polynom(0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 1.0), Polynom(0.0, 0.0, 0.0, 3.0, 1.0))
+        assertEquals(Polynom(0.0, 2.6, 3.1), Polynom(2.6, 3.1))
     }
 
     @Test
