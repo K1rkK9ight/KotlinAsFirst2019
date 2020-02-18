@@ -2,7 +2,6 @@
 
 package lesson12.task1
 
-import ru.spbstu.kotlin.generate.assume.retry
 
 /**
  * Класс "Телефонная книга".
@@ -74,9 +73,7 @@ class PhoneBook {
      * либо у него не было такого номера телефона.
      */
     fun removePhone(name: String, phone: String): Boolean {
-        var count = 0
-        book.map { if (it.key == name) count++ }
-        return if (count == 0 || !book[name]!!.contains(phone)) false
+        return if (name !in book || !book[name]!!.contains(phone)) false
         else {
             book[name]!!.remove(phone)
             true

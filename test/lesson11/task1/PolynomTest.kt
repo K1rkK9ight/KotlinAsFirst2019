@@ -172,6 +172,8 @@ class PolynomTest {
         assertEquals(Polynom(0.0, 2.0, 3.0), Polynom(2.0, 3.0))
         assertEquals(Polynom(0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 1.0), Polynom(0.0, 0.0, 0.0, 3.0, 1.0))
         assertEquals(Polynom(0.0, 2.6, 3.1), Polynom(2.6, 3.1))
+        assertNotEquals(Polynom(0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 1.0, 0.0, 0.0), Polynom(0.0, 0.0, 0.0, 3.0, 1.0, 0.0))
+        assertNotEquals(Polynom(0.0, 2.6, 3.1), Polynom(0.0, 2.6, 3.1, 0.0, 0.0))
     }
 
     @Test
