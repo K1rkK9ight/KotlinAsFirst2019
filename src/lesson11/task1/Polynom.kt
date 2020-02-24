@@ -104,7 +104,7 @@ class Polynom private constructor(private var coeFF: List<Double>) {
             for (element in minDegreePol.coeFF) {
                 multiple += element * maxDegreePol.coeFF[i]
             }
-            while (multiple.size < sumOfSize - i - 1) multiple += 0.0
+            while (multiple.size < sumOfSize - i - 1) multiple.add(0.0)
             result += Polynom(multiple)
             multiple.clear()
         }

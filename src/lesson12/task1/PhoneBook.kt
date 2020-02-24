@@ -3,6 +3,7 @@
 package lesson12.task1
 
 
+
 /**
  * Класс "Телефонная книга".
  *
@@ -60,7 +61,7 @@ class PhoneBook {
         book.forEach { if (phone in it.value) count++ }
         return if (name !in book || count > 0) false
         else {
-            book[name]!!.add(phone)
+            book.getValue(name).add(phone)
             true
         }
     }
@@ -73,9 +74,9 @@ class PhoneBook {
      * либо у него не было такого номера телефона.
      */
     fun removePhone(name: String, phone: String): Boolean {
-        return if (name !in book || !book[name]!!.contains(phone)) false
+        return if (name !in book || !book.getValue(name).contains(phone)) false
         else {
-            book[name]!!.remove(phone)
+            book.getValue(name).remove(phone)
             true
         }
     }
@@ -87,7 +88,7 @@ class PhoneBook {
     fun phones(name: String): Set<String> {
         return if (book[name] == null) emptySet()
         else {
-            book[name]!!.toSet()
+            book.getValue(name).toSet()
         }
     }
 
@@ -111,11 +112,8 @@ class PhoneBook {
         if (this === other) return true
         if (other == null) return false
         if (other !is PhoneBook) return false
-        if (other.book.size != this.book.size) return false
-        for ((keys, values) in this.book) {
-            if (keys !in other.book || values.sorted() != other.book[keys]!!.sorted()) return false
-        }
-        return true
+        if (book == other.book) return true
+        return false
     }
 
     override fun hashCode(): Int {
